@@ -1,0 +1,17 @@
+body {
+  font-family: Arial;
+  text-align: center;
+  padding: 30px;
+}
+
+#timer {
+  font-size: 40px;
+  margin: 20px;
+}
+
+textarea {
+  width: 80%;
+  height: 300px;
+  margin-top: 20px;
+  font-size: 16px;
+}
