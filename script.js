@@ -1,3 +1,10 @@
+// =======================
+// TIMER SETUP (60 MIN)
+// =======================
+let timeLeft = 3600; // 60 minutes
+let timer;
+
+// Update timer display
 function updateDisplay() {
   let minutes = Math.floor(timeLeft / 60);
   let seconds = timeLeft % 60;
@@ -6,16 +13,18 @@ function updateDisplay() {
     `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
 }
 
-// run once on load
+// Run once on load
 updateDisplay();
 
-let timeLeft = 3600; // 60 minutes in seconds
-let timer;
-
+// =======================
+// START TIMER
+// =======================
 function startTimer() {
-  document.getElementById("writingArea").disabled = false;
-
+  const writingArea = document.getElementById("writingArea");
   const startBtn = document.querySelector(".controls button");
+
+  writingArea.disabled = false;
+  writingArea.focus();
   startBtn.disabled = true;
 
   timer = setInterval(() => {
@@ -24,82 +33,80 @@ function startTimer() {
 
     if (timeLeft <= 0) {
       clearInterval(timer);
-      document.getElementById("writingArea").disabled = true;
+      writingArea.disabled = true;
       alert("Time is up!");
     }
   }, 1000);
 }
+
+// =======================
+// SAVE WRITING (BACKEND)
+// =======================
 async function saveWriting() {
   const content = document.getElementById("writingArea").value;
   const student = prompt("Enter your name:");
 
-  await fetch("http://localhost:3000/save", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ student, content })
-  });
+  if (!content.trim()) {
+    alert("Nothing to save!");
+    return;
+  }
 
-  alert("Saved!");
+  try {
+    await fetch("http://localhost:3000/save", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ student, content })
+    });
+
+    alert("Saved successfully!");
+  } catch (err) {
+    alert("Error saving data.");
+    console.error(err);
+  }
 }
-function startTimer() {
-  document.querySelector("button").disabled = true;
-  document.getElementById("writingArea").disabled = false;
 
-  timer = setInterval(() => {
-    timeLeft--;
-
-    let minutes = Math.floor(timeLeft / 60);
-    let seconds = timeLeft % 60;
-
-    document.getElementById("timer").textContent =
-      `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
-
-    if (timeLeft <= 0) {
-      clearInterval(timer);
-      document.getElementById("writingArea").disabled = true;
-      alert("Time is up!");
-    }
-  }, 1000);
-}
-document.getElementById("writingArea").focus();
-
+// =======================
+// WORD COUNTER
+// =======================
 const textarea = document.getElementById("writingArea");
+const wordCountEl = document.getElementById("wordCount");
 
-textarea.addEventListener("input", () => {
-  const words = textarea.value.trim().split(/\s+/).filter(Boolean);
-  document.getElementById("wordCount").textContent =
-    `${words.length} words`;
-});
+if (textarea && wordCountEl) {
+  textarea.addEventListener("input", () => {
+    const words = textarea.value.trim().split(/\s+/).filter(Boolean);
+    wordCountEl.textContent = `${words.length} words`;
+  });
+}
 
+// =======================
+// DARK MODE TOGGLE
+// =======================
 const toggleBtn = document.getElementById("themeToggle");
 
-// load saved theme
+// Load saved theme or default
 const savedTheme = localStorage.getItem("theme") || "light";
 document.body.classList.add(savedTheme);
 updateButtonText(savedTheme);
 
-toggleBtn.addEventListener("click", () => {
-  const isDark = document.body.classList.contains("dark");
+if (toggleBtn) {
+  toggleBtn.addEventListener("click", () => {
+    const isDark = document.body.classList.contains("dark");
 
-  document.body.classList.toggle("dark");
-  document.body.classList.toggle("light");
+    document.body.classList.toggle("dark");
+    document.body.classList.toggle("light");
 
-  const newTheme = isDark ? "light" : "dark";
-  localStorage.setItem("theme", newTheme);
+    const newTheme = isDark ? "light" : "dark";
+    localStorage.setItem("theme", newTheme);
 
-  updateButtonText(newTheme);
-});
-
-function updateButtonText(theme) {
-  toggleBtn.textContent =
-    theme === "dark" ? "☀️ Light Mode" : "🌙 Dark Mode";
+    updateButtonText(newTheme);
+  });
 }
 
-const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+function updateButtonText(theme) {
+  if (!toggleBtn) return;
 
-if (!localStorage.getItem("theme")) {
-  const defaultTheme = prefersDark ? "dark" : "light";
-  document.body.classList.add(defaultTheme);
+  toggleBtn.textContent =
+    theme === "dark" ? "☀️ Light Mode" : "🌙 Dark Mode";
 }
