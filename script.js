@@ -63,3 +63,34 @@ textarea.addEventListener("input", () => {
   document.getElementById("wordCount").textContent =
     `${words.length} words`;
 });
+
+const toggleBtn = document.getElementById("themeToggle");
+
+// load saved theme
+const savedTheme = localStorage.getItem("theme") || "light";
+document.body.classList.add(savedTheme);
+updateButtonText(savedTheme);
+
+toggleBtn.addEventListener("click", () => {
+  const isDark = document.body.classList.contains("dark");
+
+  document.body.classList.toggle("dark");
+  document.body.classList.toggle("light");
+
+  const newTheme = isDark ? "light" : "dark";
+  localStorage.setItem("theme", newTheme);
+
+  updateButtonText(newTheme);
+});
+
+function updateButtonText(theme) {
+  toggleBtn.textContent =
+    theme === "dark" ? "☀️ Light Mode" : "🌙 Dark Mode";
+}
+
+const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+if (!localStorage.getItem("theme")) {
+  const defaultTheme = prefersDark ? "dark" : "light";
+  document.body.classList.add(defaultTheme);
+}

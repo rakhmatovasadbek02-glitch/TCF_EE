@@ -1,8 +1,19 @@
 body {
   margin: 0;
   font-family: 'Segoe UI', sans-serif;
+  transition: 0.3s;
+}
+
+/* LIGHT MODE (default) */
+body.light {
   background: linear-gradient(135deg, #667eea, #764ba2);
   color: white;
+}
+
+/* DARK MODE */
+body.dark {
+  background: #121212;
+  color: #e0e0e0;
 }
 
 .container {
@@ -11,31 +22,26 @@ body {
   text-align: center;
 }
 
-h1 {
-  font-size: 36px;
-  margin-bottom: 20px;
-}
-
 #timer {
   font-size: 60px;
-  font-weight: bold;
   margin: 20px 0;
 }
 
-.controls button {
+.controls button,
+#themeToggle {
   background: white;
   color: #333;
   border: none;
-  padding: 12px 20px;
+  padding: 10px 18px;
   margin: 10px;
   border-radius: 10px;
-  font-size: 16px;
   cursor: pointer;
-  transition: 0.3s;
 }
 
-.controls button:hover {
-  background: #ddd;
+body.dark .controls button,
+body.dark #themeToggle {
+  background: #333;
+  color: white;
 }
 
 textarea {
@@ -46,5 +52,9 @@ textarea {
   border-radius: 15px;
   border: none;
   font-size: 16px;
-  resize: none;
+}
+
+body.dark textarea {
+  background: #1e1e1e;
+  color: white;
 }
