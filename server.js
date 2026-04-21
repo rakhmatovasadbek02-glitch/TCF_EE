@@ -24,9 +24,9 @@ app.listen(3000, () => {
 app.post("/save", (req, res) => {
   const { student, content } = req.body;
 
-  db.run(
-    "INSERT INTO writings (student, content) VALUES (?, ?)",
-    [student, content],
+   db.run(
+  "INSERT INTO writings (student, content) VALUES (?, ?)",
+  [student, JSON.stringify(content)],
     function (err) {
       if (err) return res.status(500).send(err);
       res.send({ id: this.lastID });

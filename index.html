@@ -17,8 +17,26 @@
       <button onclick="startTimer()">Start</button>
       <button onclick="saveWriting()">Submit</button>
     </div>
+<div class="tasks">
 
-    <textarea id="writingArea" placeholder="Start writing your thoughts..." disabled></textarea>
+  <div class="task">
+    <h2>Tâche 1</h2>
+    <textarea id="task1" placeholder="Write here..." disabled></textarea>
+  </div>
+
+  <div class="task">
+    <h2>Tâche 2</h2>
+    <textarea id="task2" placeholder="Write here..." disabled></textarea>
+  </div>
+
+  <div class="task">
+    <h2>Tâche 3</h2>
+    <textarea id="task3" placeholder="Write here..." disabled></textarea>
+  </div>
+
+</div>
+
+<p id="wordCount">0 words</p>
   </div>
 
   <script src="script.js"></script>

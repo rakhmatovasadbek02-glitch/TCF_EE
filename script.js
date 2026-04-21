@@ -20,11 +20,14 @@ updateDisplay();
 // START TIMER
 // =======================
 function startTimer() {
-  const writingArea = document.getElementById("writingArea");
+  const areas = document.querySelectorAll("textarea");
   const startBtn = document.querySelector(".controls button");
 
-  writingArea.disabled = false;
-  writingArea.focus();
+  areas.forEach(area => {
+    area.disabled = false;
+  });
+
+  areas[0].focus();
   startBtn.disabled = true;
 
   timer = setInterval(() => {
@@ -33,7 +36,7 @@ function startTimer() {
 
     if (timeLeft <= 0) {
       clearInterval(timer);
-      writingArea.disabled = true;
+      areas.forEach(area => area.disabled = true);
       alert("Time is up!");
     }
   }, 1000);
@@ -43,10 +46,15 @@ function startTimer() {
 // SAVE WRITING (BACKEND)
 // =======================
 async function saveWriting() {
-  const content = document.getElementById("writingArea").value;
   const student = prompt("Enter your name:");
 
-  if (!content.trim()) {
+  const content = {
+    task1: document.getElementById("task1").value,
+    task2: document.getElementById("task2").value,
+    task3: document.getElementById("task3").value
+  };
+
+  if (!content.task1 && !content.task2 && !content.task3) {
     alert("Nothing to save!");
     return;
   }
@@ -70,16 +78,23 @@ async function saveWriting() {
 // =======================
 // WORD COUNTER
 // =======================
-const textarea = document.getElementById("writingArea");
+const areas = document.querySelectorAll("textarea");
 const wordCountEl = document.getElementById("wordCount");
 
-if (textarea && wordCountEl) {
-  textarea.addEventListener("input", () => {
-    const words = textarea.value.trim().split(/\s+/).filter(Boolean);
-    wordCountEl.textContent = `${words.length} words`;
-  });
-}
+areas.forEach(area => {
+  area.addEventListener("input", updateWordCount);
+});
 
+function updateWordCount() {
+  let totalText = "";
+
+  areas.forEach(area => {
+    totalText += area.value + " ";
+  });
+
+  const words = totalText.trim().split(/\s+/).filter(Boolean);
+  wordCountEl.textContent = `${words.length} words (total)`;
+}
 // =======================
 // DARK MODE TOGGLE
 // =======================
