@@ -1,17 +1,26 @@
-let timeLeft = 600; // 10 minutes in seconds
+function updateDisplay() {
+  let minutes = Math.floor(timeLeft / 60);
+  let seconds = timeLeft % 60;
+
+  document.getElementById("timer").textContent =
+    `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+}
+
+// run once on load
+updateDisplay();
+
+let timeLeft = 3600; // 60 minutes in seconds
 let timer;
 
 function startTimer() {
   document.getElementById("writingArea").disabled = false;
 
+  const startBtn = document.querySelector(".controls button");
+  startBtn.disabled = true;
+
   timer = setInterval(() => {
     timeLeft--;
-
-    let minutes = Math.floor(timeLeft / 60);
-    let seconds = timeLeft % 60;
-
-    document.getElementById("timer").textContent =
-      `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+    updateDisplay();
 
     if (timeLeft <= 0) {
       clearInterval(timer);
