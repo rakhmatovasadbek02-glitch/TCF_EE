@@ -85,16 +85,28 @@ areas.forEach(area => {
   area.addEventListener("input", updateWordCount);
 });
 
-function updateWordCount() {
-  let totalText = "";
-
-  areas.forEach(area => {
-    totalText += area.value + " ";
-  });
-
-  const words = totalText.trim().split(/\s+/).filter(Boolean);
-  wordCountEl.textContent = `${words.length} words (total)`;
+function countWords(text) {
+  return text.trim().split(/\s+/).filter(Boolean).length;
 }
+
+const task1 = document.getElementById("task1");
+const task2 = document.getElementById("task2");
+const task3 = document.getElementById("task3");
+
+task1.addEventListener("input", () => {
+  document.getElementById("count1").textContent =
+    countWords(task1.value) + " words";
+});
+
+task2.addEventListener("input", () => {
+  document.getElementById("count2").textContent =
+    countWords(task2.value) + " words";
+});
+
+task3.addEventListener("input", () => {
+  document.getElementById("count3").textContent =
+    countWords(task3.value) + " words";
+});
 // =======================
 // DARK MODE TOGGLE
 // =======================
@@ -125,3 +137,16 @@ function updateButtonText(theme) {
   toggleBtn.textContent =
     theme === "dark" ? "☀️ Light Mode" : "🌙 Dark Mode";
 }
+
+const tasks = document.querySelectorAll(".task");
+
+tasks.forEach(task => {
+  task.addEventListener("click", () => {
+    tasks.forEach(t => t.classList.remove("active"));
+    task.classList.add("active");
+
+    // focus textarea inside clicked task
+    const textarea = task.querySelector("textarea");
+    textarea.focus();
+  });
+});
