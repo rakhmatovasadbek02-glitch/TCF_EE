@@ -27,14 +27,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const areas = document.querySelectorAll("textarea");
     const startBtn = document.getElementById("startBtn");
 
+    // Lock all textareas first
+    areas.forEach(area => area.disabled = true);
+
+    // Enable only active task
     const activeTask = document.querySelector(".task.active textarea");
 
-if (activeTask) {
-  activeTask.disabled = false;
-  activeTask.focus();
-}
+    if (activeTask) {
+      activeTask.disabled = false;
+      activeTask.focus();
+    }
 
-    areas[0].focus();
     if (startBtn) startBtn.disabled = true;
 
     timer = setInterval(() => {
@@ -143,29 +146,31 @@ if (activeTask) {
       theme === "dark" ? "☀️ Light Mode" : "🌙 Dark Mode";
   }
 
- // =======================
-// TASK SELECTION (REAL SWITCHING)
-// =======================
-const tasks = document.querySelectorAll(".task");
-const textareas = document.querySelectorAll("textarea");
+  // =======================
+  // TASK SELECTION (REAL SWITCHING)
+  // =======================
+  const tasks = document.querySelectorAll(".task");
+  const textareas = document.querySelectorAll("textarea");
 
-tasks.forEach(task => {
-  task.addEventListener("click", () => {
-    
-    // Remove active from all
-    tasks.forEach(t => t.classList.remove("active"));
+  tasks.forEach(task => {
+    task.addEventListener("click", () => {
 
-    // Lock all textareas
-    textareas.forEach(area => {
-      area.disabled = true;
+      // Remove active from all
+      tasks.forEach(t => t.classList.remove("active"));
+
+      // Lock all textareas
+      textareas.forEach(area => {
+        area.disabled = true;
+      });
+
+      // Activate clicked task
+      task.classList.add("active");
+
+      // Enable only its textarea
+      const textarea = task.querySelector("textarea");
+      textarea.disabled = false;
+      textarea.focus();
     });
-
-    // Activate clicked task
-    task.classList.add("active");
-
-    // Enable only its textarea
-    const textarea = task.querySelector("textarea");
-    textarea.disabled = false;
-    textarea.focus();
   });
+
 });
