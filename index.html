@@ -7,16 +7,21 @@
 </head>
 <body>
 
-  <h1>Writing Practice</h1>
+  <div class="container">
+    <h1>✍️ Writing Session</h1>
 
-  <div id="timer">10:00</div>
+    <div id="timer">10:00</div>
 
-  <button onclick="startTimer()">Start</button>
+    <div class="controls">
+      <button onclick="startTimer()">Start</button>
+      <button onclick="saveWriting()">Submit</button>
+    </div>
 
-  <button onclick="saveWriting()">Submit</button>
-
-  <textarea id="writingArea" placeholder="Start writing..." disabled></textarea>
+    <textarea id="writingArea" placeholder="Start writing your thoughts..." disabled></textarea>
+  </div>
 
   <script src="script.js"></script>
 </body>
 </html>
+
+<p id="wordCount">0 words</p>
