@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // =======================
   let timeLeft = 3600;
   let timer;
-  let isRunning = false;
+  window.isRunning = false;
 
   function updateDisplay() {
     let minutes = Math.floor(timeLeft / 60);
@@ -174,3 +174,35 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
 });
+
+// =======================
+// TASK SWITCH (TABS)
+// =======================
+window.selectTask = function (num) {
+  const boxes = [
+    document.getElementById("taskBox1"),
+    document.getElementById("taskBox2"),
+    document.getElementById("taskBox3")
+  ];
+
+  const areas = [
+    document.getElementById("task1"),
+    document.getElementById("task2"),
+    document.getElementById("task3")
+  ];
+
+  // Hide all
+  boxes.forEach(box => box.style.display = "none");
+
+  // Show selected
+  boxes[num - 1].style.display = "block";
+
+  // Disable all textareas
+  areas.forEach(a => a.disabled = true);
+
+  // Enable selected ONLY if timer started
+  if (isRunning) {
+    areas[num - 1].disabled = false;
+    areas[num - 1].focus();
+  }
+};
