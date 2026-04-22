@@ -8,9 +8,11 @@
 
 <body class="light">
 
+<!-- TOP BAR -->
 <div class="topbar">
   <div class="logo">TCF Simulator</div>
   <div id="timer" class="timer">60:00</div>
+
   <div class="top-right">
     <span id="lightMode">☀️</span>
     <span id="darkMode">🌙</span>
@@ -18,39 +20,45 @@
   </div>
 </div>
 
+<!-- MAIN -->
 <div class="container">
 
+  <!-- CONTROLS -->
   <div class="controls">
     <button id="startBtn" onclick="startTimer()">Start</button>
     <button onclick="saveWriting()">Submit</button>
   </div>
 
+  <!-- TASK BUTTONS -->
   <div class="task-buttons">
     <button onclick="selectTask(1)" class="active">Tâche 1</button>
     <button onclick="selectTask(2)">Tâche 2</button>
     <button onclick="selectTask(3)">Tâche 3</button>
   </div>
 
+  <!-- LAYOUT -->
   <div class="exam-layout">
 
+    <!-- LEFT -->
     <div class="question-box">
       <p id="questionText"></p>
     </div>
 
+    <!-- RIGHT -->
     <div class="writing-box">
 
       <div class="task" id="taskBox1">
-        <textarea id="task1" disabled></textarea>
+        <textarea id="task1" placeholder="Write your answer..." disabled></textarea>
         <p id="count1" class="word-count">0 words</p>
       </div>
 
       <div class="task" id="taskBox2" style="display:none;">
-        <textarea id="task2" disabled></textarea>
+        <textarea id="task2" placeholder="Write your answer..." disabled></textarea>
         <p id="count2" class="word-count">0 words</p>
       </div>
 
       <div class="task" id="taskBox3" style="display:none;">
-        <textarea id="task3" disabled></textarea>
+        <textarea id="task3" placeholder="Write your answer..." disabled></textarea>
         <p id="count3" class="word-count">0 words</p>
       </div>
 
