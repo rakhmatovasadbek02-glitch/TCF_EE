@@ -28,6 +28,8 @@ body.dark {
   align-items: center;
   justify-content: space-between;
   padding: 0 20px;
+  position: relative; /* FIX: establishes stacking context for z-index to work */
+  z-index: 10;
 }
 
 /* FIX 5: logo now has proper size and weight */
@@ -44,6 +46,8 @@ body.dark {
   font-size: 22px;
   font-weight: 600;
   letter-spacing: 2px;
+  pointer-events: none; /* FIX: prevents timer from blocking button clicks */
+  z-index: 0;           /* FIX: keeps timer behind interactive elements */
 }
 
 .top-right span {
@@ -80,6 +84,8 @@ body.dark {
   background: rgba(255, 255, 255, 0.2);
   color: white;
   transition: background 0.2s;
+  position: relative; /* FIX: ensures buttons are always clickable above timer */
+  z-index: 1;
 }
 
 .controls button:hover,
