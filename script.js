@@ -166,6 +166,9 @@ document.addEventListener("DOMContentLoaded", () => {
     // Show selected
     boxes[num - 1].style.display = "block";
 
+    // Update question
+    document.getElementById("questionText").textContent = questions[num - 1];
+
     // Button highlight
     buttons.forEach(b => b.classList.remove("active"));
     buttons[num - 1].classList.add("active");
@@ -206,3 +209,12 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
 });
+
+// =======================
+// QUESTIONS PER TASK
+// =======================
+const questions = [
+  "Tâche 1: You received an email from a friend. Reply and give advice.",
+  "Tâche 2: Write an article about the importance of education.",
+  "Tâche 3: Express your opinion on technology in modern life."
+];
