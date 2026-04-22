@@ -167,7 +167,7 @@ document.addEventListener("DOMContentLoaded", () => {
     boxes[num - 1].style.display = "block";
 
     // Update question
-    document.getElementById("questionText").textContent = questions[num - 1];
+ document.getElementById("questionText").textContent = questions[num - 1];   document.getElementById("questionText").textContent = questions[num - 1];
 
     // Button highlight
     buttons.forEach(b => b.classList.remove("active"));

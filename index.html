@@ -22,12 +22,9 @@
     </div>
 
     <div class="top-right">
-
       <span id="lightMode">☀️</span>
       <span id="darkMode">🌙</span>
-
       <button id="fullscreenBtn">⛶</button>
-
     </div>
 
   </div>
@@ -50,40 +47,42 @@
       <button onclick="selectTask(3)">Tâche 3</button>
     </div>
 
-    <!-- TASKS -->
-   <div class="exam-layout">
+    <!-- =======================
+         EXAM LAYOUT
+    ======================= -->
+    <div class="exam-layout">
 
-  <!-- LEFT: QUESTION -->
-  <div class="question-box" id="questionBox">
-    <p id="questionText">
-      Question will appear here...
-    </p>
-  </div>
+      <!-- LEFT: QUESTION -->
+      <div class="question-box">
+        <p id="questionText">
+          Question will appear here...
+        </p>
+      </div>
 
-  <!-- RIGHT: WRITING -->
-  <div class="writing-box">
+      <!-- RIGHT: WRITING -->
+      <div class="writing-box">
 
-    <!-- Task 1 -->
-    <div class="task" id="taskBox1">
-      <textarea id="task1" placeholder="Write your answer..." disabled></textarea>
-      <p id="count1" class="word-count">0 words</p>
+        <!-- Task 1 -->
+        <div class="task" id="taskBox1">
+          <textarea id="task1" placeholder="Write your answer..." disabled></textarea>
+          <p id="count1" class="word-count">0 words</p>
+        </div>
+
+        <!-- Task 2 -->
+        <div class="task" id="taskBox2" style="display:none;">
+          <textarea id="task2" placeholder="Write your answer..." disabled></textarea>
+          <p id="count2" class="word-count">0 words</p>
+        </div>
+
+        <!-- Task 3 -->
+        <div class="task" id="taskBox3" style="display:none;">
+          <textarea id="task3" placeholder="Write your answer..." disabled></textarea>
+          <p id="count3" class="word-count">0 words</p>
+        </div>
+
+      </div>
+
     </div>
-
-    <!-- Task 2 -->
-    <div class="task" id="taskBox2" style="display:none;">
-      <textarea id="task2" placeholder="Write your answer..." disabled></textarea>
-      <p id="count2" class="word-count">0 words</p>
-    </div>
-
-    <!-- Task 3 -->
-    <div class="task" id="taskBox3" style="display:none;">
-      <textarea id="task3" placeholder="Write your answer..." disabled></textarea>
-      <p id="count3" class="word-count">0 words</p>
-    </div>
-
-  </div>
-
-</div>
 
   </div>
 
