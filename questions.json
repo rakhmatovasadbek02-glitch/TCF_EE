@@ -26,6 +26,15 @@
         "task2": "Tâche 2: Write an article for a school newspaper about what individuals can do in their daily lives to help protect the environment. (150–200 words)",
         "task3": "Tâche 3: Some people argue that governments, not individuals, are responsible for solving environmental problems. Do you agree or disagree? Justify your answer."
       }
+    },
+    {
+      "id": "rfw",
+      "name": "combi 1",
+      "tasks": {
+        "task1": "rfwedfwed",
+        "task2": "fewd",
+        "task3": "wdc"
+      }
     }
   ]
 }

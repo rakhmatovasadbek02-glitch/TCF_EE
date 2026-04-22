@@ -7,7 +7,6 @@ const fs = require("fs");
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname)));
 
 const db = new sqlite3.Database("database.db");
 const QUESTIONS_FILE = path.join(__dirname, "questions.json");
@@ -21,9 +20,9 @@ db.run(`
   )
 `);
 
-// ── Questions ────────────────────────────────────────────
+// ── Questions ─────────────────────────────────────────────
+// NOTE: API routes must come BEFORE express.static
 
-// GET all question sets
 app.get("/questions", (req, res) => {
   try {
     const data = JSON.parse(fs.readFileSync(QUESTIONS_FILE, "utf8"));
@@ -33,17 +32,20 @@ app.get("/questions", (req, res) => {
   }
 });
 
-// POST save all question sets (from admin page)
 app.post("/questions", (req, res) => {
   try {
+    if (!req.body || !req.body.sets) {
+      return res.status(400).json({ error: "Invalid data format." });
+    }
     fs.writeFileSync(QUESTIONS_FILE, JSON.stringify(req.body, null, 2), "utf8");
     res.json({ ok: true });
   } catch (err) {
+    console.error("Error writing questions:", err);
     res.status(500).json({ error: "Could not write questions file." });
   }
 });
 
-// ── Writings ─────────────────────────────────────────────
+// ── Writings ──────────────────────────────────────────────
 
 app.post("/save", (req, res) => {
   const { student, content } = req.body;
@@ -71,8 +73,10 @@ app.get("/writings", (req, res) => {
   });
 });
 
-// ── Start ─────────────────────────────────────────────────
+// ── Static files — AFTER API routes ───────────────────────
+app.use(express.static(path.join(__dirname)));
 
+// ── Start ──────────────────────────────────────────────────
 app.listen(3000, () => {
   console.log("Server running on http://localhost:3000");
   console.log("Student exam:       http://localhost:3000/index.html");

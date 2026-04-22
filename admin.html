@@ -214,10 +214,11 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(allData)
       });
-      if (!res.ok) throw new Error();
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || "Server error " + res.status);
       showStatus("Saved successfully!", "success");
-    } catch {
-      showStatus("Failed to save. Is the server running?", "error");
+    } catch (err) {
+      showStatus("Failed to save: " + err.message, "error");
     }
   }
 
