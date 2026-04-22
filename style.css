@@ -44,7 +44,7 @@ body.dark {
   font-weight: bold;
 }
 
-/* CENTER TIMER */
+/* TIMER CENTER */
 .timer {
   position: absolute;
   left: 50%;
@@ -87,7 +87,7 @@ body.dark #fullscreenBtn {
 }
 
 /* =======================
-   CONTAINER
+   CONTAINER (WIDER)
 ======================= */
 .container {
   width: 95%;
@@ -158,28 +158,46 @@ body.dark .task-buttons button.active {
 }
 
 /* =======================
-   TASK BOX
+   EXAM LAYOUT (2 PANELS)
 ======================= */
-.tasks {
-  margin-top: 20px;
+.exam-layout {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr; /* writing bigger */
+  gap: 20px;
+  height: calc(100vh - 140px);
 }
 
-.task {
+/* =======================
+   LEFT: QUESTION BOX
+======================= */
+.question-box {
   background: rgba(255, 255, 255, 0.12);
   padding: 20px;
   border-radius: 15px;
+  overflow-y: auto;
+  text-align: left;
 }
 
-body.dark .task {
+body.dark .question-box {
   background: rgba(255, 255, 255, 0.05);
 }
 
 /* =======================
-   TEXTAREA
+   RIGHT: WRITING
 ======================= */
+.writing-box {
+  position: relative;
+  height: 100%;
+}
+
+.task {
+  height: 100%;
+}
+
+/* TEXTAREA FULL SIZE */
 textarea {
   width: 100%;
-  height: 260px;
+  height: 100%;
   padding: 15px;
   border-radius: 12px;
   border: none;
@@ -195,58 +213,8 @@ body.dark textarea {
 }
 
 /* =======================
-   WORD COUNT
+   WORD COUNT (BOTTOM RIGHT)
 ======================= */
-.task p {
-  margin-top: 10px;
-  font-size: 14px;
-  opacity: 0.9;
-}
-
-/* =======================
-   EXAM LAYOUT (2 COLUMNS)
-======================= */
-.exam-layout {
-  display: grid;
-  grid-template-columns: 1fr 1.5fr; /* ← wider right side */
-  gap: 20px;
-  height: 600px;
-}
-
-/* LEFT SIDE (QUESTION) */
-.question-box {
-  background: rgba(255, 255, 255, 0.12);
-  padding: 20px;
-  border-radius: 15px;
-  overflow-y: auto;
-  text-align: left;
-}
-
-body.dark .question-box {
-  background: rgba(255, 255, 255, 0.05);
-}
-
-/* RIGHT SIDE (WRITING) */
-.writing-box {
-  position: relative;
-}
-
-.task {
-  height: 100%;
-}
-
-/* TEXTAREA FULL HEIGHT */
-textarea {
-  width: 100%;
-  height: 100%;
-  padding: 15px;
-  border-radius: 12px;
-  border: none;
-  font-size: 16px;
-  resize: none;
-}
-
-/* WORD COUNT (BOTTOM RIGHT) */
 .word-count {
   position: absolute;
   bottom: 10px;
