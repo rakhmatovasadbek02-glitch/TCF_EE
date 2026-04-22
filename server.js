@@ -6,6 +6,7 @@ const fs = require("fs");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const ACCESS_CODE = process.env.ACCESS_CODE || "TCF-2025";
 
 app.use(cors());
 app.use(express.json());
@@ -21,6 +22,17 @@ db.exec(`
     date DATETIME DEFAULT CURRENT_TIMESTAMP
   )
 `);
+
+// ── Access code verification ───────────────────────────────
+
+app.post("/verify-code", (req, res) => {
+  const { code } = req.body;
+  if (code === ACCESS_CODE) {
+    res.json({ ok: true });
+  } else {
+    res.status(401).json({ ok: false, error: "Invalid access code." });
+  }
+});
 
 // ── Questions ─────────────────────────────────────────────
 
@@ -75,7 +87,7 @@ app.get("/writings", (req, res) => {
   }
 });
 
-// ── Root redirect to landing page ────────────────────────────
+// ── Root redirect ──────────────────────────────────────────
 app.get("/", (req, res) => {
   res.redirect("/landing.html");
 });
@@ -86,6 +98,7 @@ app.use(express.static(path.join(__dirname)));
 // ── Start ──────────────────────────────────────────────────
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+  console.log(`Access code: ${ACCESS_CODE}`);
   console.log(`Student exam:      http://localhost:${PORT}/index.html`);
   console.log(`Teacher dashboard: http://localhost:${PORT}/dashboard.html`);
   console.log(`Admin panel:       http://localhost:${PORT}/admin.html`);

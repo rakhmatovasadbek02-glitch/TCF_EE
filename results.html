@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TCF — Résultats</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --c1: #42587D; --c2: #4D6691; --c3: #5673A7; --c4: #708CC5; --c5: #9FADCB;
+      --line: rgba(255,255,255,0.12); --line-hi: rgba(255,255,255,0.25);
+      --text: #ffffff; --text-muted: rgba(255,255,255,0.65);
+      --green: #a8d5b5;
+      --font-display: 'DM Serif Display', serif;
+      --font: 'DM Sans', sans-serif;
+    }
+    body { font-family: var(--font); background: var(--c1); color: var(--text); min-height: 100vh; -webkit-font-smoothing: antialiased; }
+
+    /* TOPBAR */
+    .topbar { height: 56px; display: flex; align-items: center; justify-content: space-between; padding: 0 28px; border-bottom: 1px solid var(--line); }
+    .topbar-left { display: flex; align-items: center; gap: 12px; }
+    .brand { font-size: 13px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; }
+    .brand-sep { width: 1px; height: 14px; background: var(--line-hi); }
+    .brand-sub { font-size: 12px; font-weight: 300; color: var(--text-muted); }
+
+    /* CONTENT */
+    .content { max-width: 720px; margin: 0 auto; padding: 48px 24px 80px; }
+
+    /* SUCCESS HEADER */
+    .success-header { text-align: center; margin-bottom: 48px; }
+    .success-icon {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: rgba(168,213,181,0.15);
+      border: 1px solid rgba(168,213,181,0.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px; margin: 0 auto 20px;
+      animation: popIn 0.4s ease;
+    }
+    @keyframes popIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+    .success-title { font-family: var(--font-display); font-size: clamp(28px, 5vw, 40px); font-weight: 400; margin-bottom: 8px; }
+    .success-sub { font-size: 14px; font-weight: 300; color: var(--text-muted); }
+    .student-name-display { color: var(--c5); font-weight: 500; }
+
+    /* STATS ROW */
+    .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 36px; }
+    .stat-card { background: var(--c2); border: 1px solid var(--line); border-radius: 10px; padding: 18px 20px; text-align: center; }
+    .stat-value { font-family: var(--font-display); font-size: 28px; font-weight: 400; color: var(--c5); line-height: 1; margin-bottom: 6px; }
+    .stat-label { font-size: 10px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-muted); }
+
+    /* TASK CARDS */
+    .task-result { background: var(--c2); border: 1px solid var(--line); border-radius: 10px; padding: 24px; margin-bottom: 14px; }
+    .task-result-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+    .task-result-label { font-size: 10px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); }
+    .task-result-wc { font-size: 11px; font-weight: 500; color: var(--c5); }
+    .task-result-text { font-size: 14px; font-weight: 300; line-height: 1.8; color: var(--text); white-space: pre-wrap; }
+    .task-result-empty { font-size: 13px; font-style: italic; color: var(--text-muted); }
+
+    /* ACTIONS */
+    .actions { display: flex; gap: 12px; margin-top: 36px; justify-content: center; flex-wrap: wrap; }
+    .btn-white { background: #ffffff; color: var(--c1); border: none; border-radius: 8px; padding: 12px 28px; font-family: var(--font); font-size: 14px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-block; transition: opacity 0.15s; }
+    .btn-white:hover { opacity: 0.88; }
+    .btn-ghost { background: rgba(255,255,255,0.1); color: var(--text); border: 1px solid var(--line-hi); border-radius: 8px; padding: 12px 28px; font-family: var(--font); font-size: 14px; font-weight: 400; cursor: pointer; text-decoration: none; display: inline-block; transition: background 0.15s; }
+    .btn-ghost:hover { background: rgba(255,255,255,0.18); }
+
+    @media (max-width: 600px) {
+      .stats-row { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+      .stat-value { font-size: 22px; }
+      .actions { flex-direction: column; align-items: stretch; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <span class="brand">TCF</span>
+    <span class="brand-sep"></span>
+    <span class="brand-sub">Résultats</span>
+  </div>
+</div>
+
+<div class="content">
+  <div class="success-header">
+    <div class="success-icon">✓</div>
+    <h1 class="success-title">Copie soumise !</h1>
+    <p class="success-sub">Bravo <span class="student-name-display" id="studentNameDisplay"></span> — votre copie a été transmise à votre enseignant.</p>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-value" id="totalWords">0</div>
+      <div class="stat-label">Mots au total</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="tasksCompleted">0/3</div>
+      <div class="stat-label">Tâches rédigées</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="timeUsed">—</div>
+      <div class="stat-label">Temps utilisé</div>
+    </div>
+  </div>
+
+  <div id="taskResults"></div>
+
+  <div class="actions">
+    <a href="/landing.html" class="btn-white">Retour à l'accueil</a>
+    <a href="/index.html" class="btn-ghost">Nouvel examen</a>
+  </div>
+</div>
+
+<script>
+  function countWords(text) {
+    if (!text || !text.trim()) return 0;
+    return text.trim().split(/\s+/).length;
+  }
+
+  // Load data from sessionStorage (set by script.js after submit)
+  const result = JSON.parse(sessionStorage.getItem("tcf_result") || "null");
+
+  if (!result) {
+    // No result data — redirect to landing
+    window.location.href = "/landing.html";
+  } else {
+    const { student, content, timeUsed } = result;
+
+    document.getElementById("studentNameDisplay").textContent = student;
+
+    const tasks = [content.task1 || "", content.task2 || "", content.task3 || ""];
+    const wordCounts = tasks.map(countWords);
+    const total = wordCounts.reduce((a, b) => a + b, 0);
+    const completed = tasks.filter(t => t.trim().length > 0).length;
+
+    document.getElementById("totalWords").textContent = total;
+    document.getElementById("tasksCompleted").textContent = `${completed}/3`;
+
+    // Format time used
+    if (timeUsed !== undefined) {
+      const used = 3600 - timeUsed;
+      const m = Math.floor(used / 60);
+      const s = used % 60;
+      document.getElementById("timeUsed").textContent = `${m}m${s < 10 ? "0" : ""}${s}s`;
+    }
+
+    // Render task cards
+    const container = document.getElementById("taskResults");
+    tasks.forEach((text, i) => {
+      const card = document.createElement("div");
+      card.className = "task-result";
+      card.innerHTML = `
+        <div class="task-result-header">
+          <span class="task-result-label">Tâche ${i + 1}</span>
+          <span class="task-result-wc">${wordCounts[i]} mot${wordCounts[i] !== 1 ? "s" : ""}</span>
+        </div>
+        ${text.trim()
+          ? `<div class="task-result-text">${text.replace(/</g, "&lt;")}</div>`
+          : `<div class="task-result-empty">Aucune réponse rédigée.</div>`
+        }
+      `;
+      container.appendChild(card);
+    });
+  }
+</script>
+</body>
+</html>

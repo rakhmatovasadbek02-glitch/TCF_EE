@@ -4,6 +4,8 @@ document.addEventListener("DOMContentLoaded", () => {
   let timer;
   let isRunning = false;
   let questions = ["", "", ""];
+  let warningShown30 = false;
+  let warningShown10 = false;
 
   // ========================
   // LOAD QUESTION SETS
@@ -39,7 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadQuestionSets();
 
   // ========================
-  // TIMER
+  // TIMER DISPLAY
   // ========================
   function updateDisplay() {
     const m = Math.floor(timeLeft / 60);
@@ -52,12 +54,48 @@ document.addEventListener("DOMContentLoaded", () => {
 
   updateDisplay();
 
+  // ========================
+  // TIMED WARNING MODAL
+  // ========================
+  function showWarning(title, message, color) {
+    if (document.getElementById("warningModal")) return;
+    const modal = document.createElement("div");
+    modal.id = "warningModal";
+    modal.style.cssText = `
+      position:fixed;inset:0;background:rgba(0,0,0,0.6);
+      display:flex;align-items:center;justify-content:center;z-index:999;
+      backdrop-filter:blur(4px);animation:fadeIn 0.2s ease;
+    `;
+    modal.innerHTML = `
+      <style>@keyframes fadeIn{from{opacity:0}to{opacity:1}}</style>
+      <div style="
+        background:#4D6691;border:1px solid rgba(255,255,255,0.2);
+        border-top:3px solid ${color};
+        border-radius:12px;padding:32px 28px;max-width:340px;width:90%;
+        text-align:center;
+      ">
+        <div style="font-size:32px;margin-bottom:14px;">${title.split(' ')[0]}</div>
+        <div style="font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;color:#fff;margin-bottom:10px;">${title.split(' ').slice(1).join(' ')}</div>
+        <p style="font-size:13px;font-weight:300;color:rgba(255,255,255,0.75);line-height:1.6;margin-bottom:24px;">${message}</p>
+        <button onclick="document.getElementById('warningModal').remove()" style="
+          background:#ffffff;color:#42587D;border:none;border-radius:6px;
+          padding:10px 28px;font-family:'DM Sans',sans-serif;
+          font-size:13px;font-weight:600;cursor:pointer;
+        ">Continuer</button>
+      </div>
+    `;
+    document.body.appendChild(modal);
+  }
+
+  // ========================
+  // START TIMER
+  // ========================
   window.startTimer = function () {
     if (isRunning) return;
 
     const select = document.getElementById("setSelect");
     if (!select.value) {
-      select.style.borderColor = "#f0f0f0";
+      select.style.borderColor = "#ffffff";
       setTimeout(() => select.style.borderColor = "", 800);
       return;
     }
@@ -71,15 +109,31 @@ document.addEventListener("DOMContentLoaded", () => {
     timer = setInterval(() => {
       timeLeft--;
       updateDisplay();
+
+      // 30 minute warning
+      if (timeLeft === 1800 && !warningShown30) {
+        warningShown30 = true;
+        showWarning("⏱ 30 minutes restantes", "Vous avez utilisé la moitié du temps imparti. Pensez à vérifier vos réponses pour les tâches déjà rédigées.", "#9FADCB");
+      }
+
+      // 10 minute warning
+      if (timeLeft === 600 && !warningShown10) {
+        warningShown10 = true;
+        showWarning("⚠ 10 minutes restantes", "Il ne vous reste plus que 10 minutes. Assurez-vous d'avoir répondu aux trois tâches.", "#f4a0a0");
+      }
+
       if (timeLeft <= 0) {
         clearInterval(timer);
         isRunning = false;
         document.querySelectorAll("textarea").forEach(a => a.disabled = true);
-        alert("Le temps est écoulé !");
+        showWarning("⏰ Temps écoulé", "Votre temps est écoulé. Veuillez soumettre votre copie maintenant.", "#f4a0a0");
       }
     }, 1000);
   };
 
+  // ========================
+  // STOP TIMER
+  // ========================
   function stopTimer() {
     clearInterval(timer);
     isRunning = false;
@@ -91,10 +145,7 @@ document.addEventListener("DOMContentLoaded", () => {
   window.selectTask = function (num) {
     if (!isRunning) {
       const btn = document.querySelector(".btn-start");
-      if (btn) {
-        btn.style.transform = "scale(1.08)";
-        setTimeout(() => btn.style.transform = "", 180);
-      }
+      if (btn) { btn.style.transform = "scale(1.08)"; setTimeout(() => btn.style.transform = "", 180); }
       return;
     }
 
@@ -154,28 +205,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     modal.innerHTML = `
       <div style="
-        background:#141414;border:1px solid #2a2a2a;
-        border-radius:8px;padding:32px 28px;
-        display:flex;flex-direction:column;gap:16px;
+        background:#4D6691;border:1px solid rgba(255,255,255,0.2);
+        border-radius:10px;padding:32px 28px;
+        display:flex;flex-direction:column;gap:14px;
         min-width:300px;max-width:90vw;
       ">
-        <div style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.2em;color:#555;">IDENTIFICATION</div>
-        <div style="font-size:16px;font-weight:400;color:#e8e8e8;">Entrez votre nom complet</div>
+        <div style="font-size:10px;font-weight:600;letter-spacing:0.2em;color:rgba(255,255,255,0.5);">IDENTIFICATION</div>
+        <div style="font-family:'DM Serif Display',serif;font-size:20px;color:#fff;">Entrez votre nom complet</div>
         <input id="studentNameInput" type="text" placeholder="Nom et prénom"
-          style="background:#1a1a1a;border:1px solid #2a2a2a;border-radius:4px;
-                 padding:10px 14px;color:#e8e8e8;font-size:14px;
-                 font-family:'DM Sans',sans-serif;outline:none;width:100%;" />
+          style="background:#fff;color:#1a2a3a;border:1px solid #dde3ec;border-radius:6px;
+                 padding:10px 14px;font-size:14px;font-family:'DM Sans',sans-serif;outline:none;width:100%;" />
         <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:4px;">
-          <button id="cancelSubmit" style="padding:8px 18px;border-radius:4px;
-            border:1px solid #2a2a2a;background:transparent;color:#666;
-            font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;">
-            Annuler
-          </button>
-          <button id="confirmSubmit" style="padding:8px 20px;border-radius:4px;
-            border:none;background:#f0f0f0;color:#0d0d0d;font-weight:600;
-            font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;">
-            Soumettre
-          </button>
+          <button id="cancelSubmit" style="padding:8px 18px;border-radius:6px;border:1px solid rgba(255,255,255,0.2);background:transparent;color:rgba(255,255,255,0.6);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;">Annuler</button>
+          <button id="confirmSubmit" style="padding:8px 20px;border-radius:6px;border:none;background:#fff;color:#42587D;font-weight:600;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;">Soumettre</button>
         </div>
       </div>
     `;
@@ -186,7 +228,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function submitModal() {
       const student = input.value.trim();
-      if (!student) { input.style.borderColor = "#f87171"; return; }
+      if (!student) { input.style.borderColor = "#f4a0a0"; return; }
 
       const content = {
         task1: document.getElementById("task1").value,
@@ -194,6 +236,7 @@ document.addEventListener("DOMContentLoaded", () => {
         task3: document.getElementById("task3").value
       };
 
+      const currentTimeLeft = timeLeft;
       stopTimer();
       document.querySelectorAll("textarea").forEach(a => a.disabled = true);
       document.body.removeChild(modal);
@@ -204,7 +247,11 @@ document.addEventListener("DOMContentLoaded", () => {
         body: JSON.stringify({ student, content })
       })
         .then(r => r.json())
-        .then(() => alert("Copie soumise avec succès !"))
+        .then(() => {
+          // Save result to sessionStorage and redirect to results page
+          sessionStorage.setItem("tcf_result", JSON.stringify({ student, content, timeUsed: currentTimeLeft }));
+          window.location.href = "/results.html";
+        })
         .catch(() => alert("Erreur de soumission. Le serveur est-il en marche ?"));
     }
 
