@@ -22,10 +22,19 @@
     </div>
     <div class="topbar-center">
       <span id="timer" class="timer">60:00</span>
+      <div class="timer-label">TEMPS RESTANT</div>
     </div>
     <div class="topbar-right">
-      <select id="setSelect" class="set-select"></select>
+      <button class="btn-start" onclick="startTimer()">Commencer</button>
+      <button class="btn-submit" onclick="saveWriting()">Soumettre</button>
     </div>
+  </div>
+
+  <!-- SELECTOR BAR — always visible -->
+  <div class="selectorbar">
+    <label class="selector-label" for="setSelect">SUJET</label>
+    <select id="setSelect" class="set-select"></select>
+    <span id="setStatus" class="set-status"></span>
   </div>
 
   <!-- ACTION BAR -->
@@ -35,10 +44,6 @@
       <button class="task-btn" onclick="selectTask(2)">Tâche 02</button>
       <button class="task-btn" onclick="selectTask(3)">Tâche 03</button>
     </nav>
-    <div class="action-btns">
-      <button class="btn-start" onclick="startTimer()">Commencer</button>
-      <button class="btn-submit" onclick="saveWriting()">Soumettre</button>
-    </div>
   </div>
 
   <!-- MAIN -->
@@ -48,7 +53,6 @@
     <div class="consigne-panel">
       <div class="consigne-label">CONSIGNE</div>
       <p id="questionText" class="consigne-text">Sélectionnez un sujet pour commencer.</p>
-      <div id="setStatus" class="set-status"></div>
     </div>
 
     <!-- WRITING -->
