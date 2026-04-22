@@ -4,109 +4,236 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin — Question Sets</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
-    * { box-sizing: border-box; }
-    body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; margin: 0; padding: 20px; color: #333; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    h1 { color: #764ba2; margin-bottom: 4px; }
-    .subtitle { color: #888; font-size: 14px; margin-bottom: 24px; }
+    :root {
+      --c1: #42587D;
+      --c2: #4D6691;
+      --c3: #5673A7;
+      --c4: #708CC5;
+      --c5: #9FADCB;
+      --line: rgba(255,255,255,0.12);
+      --line-hi: rgba(255,255,255,0.25);
+      --text: #ffffff;
+      --text-dim: #ffffff;
+      --text-muted: rgba(255,255,255,0.75);
+      --green: #a8d5b5;
+      --red: #f4a0a0;
+      --font: 'DM Sans', sans-serif;
+    }
 
+    body {
+      font-family: var(--font);
+      background: var(--c1);
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* TOPBAR */
+    .topbar {
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      background: var(--c1);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .topbar-left { display: flex; align-items: center; gap: 12px; }
+
+    .brand {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    .brand-sep { width: 1px; height: 14px; background: var(--line-hi); }
+
+    .brand-sub {
+      font-size: 12px;
+      font-weight: 300;
+      color: var(--text-muted);
+    }
+
+    /* CONTENT */
+    .content {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 32px 24px;
+    }
+
+    /* STATUS */
+    .status-msg {
+      padding: 12px 16px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 20px;
+      display: none;
+    }
+    .status-msg.success { background: rgba(168,213,181,0.2); color: var(--green); border: 1px solid rgba(168,213,181,0.3); display: block; }
+    .status-msg.error   { background: rgba(244,160,160,0.2); color: var(--red);   border: 1px solid rgba(244,160,160,0.3); display: block; }
+
+    /* TOOLBAR */
     .toolbar {
-      display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; align-items: center;
+      display: flex;
+      gap: 10px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      align-items: center;
     }
 
-    select#setList {
-      padding: 8px 12px; border-radius: 8px; border: 1px solid #ccc;
-      font-size: 14px; min-width: 220px;
+    select {
+      background: rgba(255,255,255,0.1);
+      color: var(--text);
+      border: 1px solid var(--line-hi);
+      border-radius: 6px;
+      padding: 8px 14px;
+      font-family: var(--font);
+      font-size: 13px;
+      outline: none;
+      cursor: pointer;
+      min-width: 220px;
+      -webkit-appearance: none;
     }
+    select option { background: var(--c2); color: white; }
+    select:focus { border-color: var(--c5); }
 
     button {
-      padding: 8px 16px; border: none; border-radius: 8px;
-      cursor: pointer; font-size: 14px; font-weight: 600;
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 500;
+      padding: 8px 18px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.15s;
+      -webkit-tap-highlight-color: transparent;
     }
-    .btn-primary { background: #764ba2; color: white; }
-    .btn-primary:hover { background: #5e3a85; }
-    .btn-danger { background: #e74c3c; color: white; }
-    .btn-danger:hover { background: #c0392b; }
-    .btn-save { background: #27ae60; color: white; }
-    .btn-save:hover { background: #1e8449; }
-    .btn-secondary { background: #eee; color: #333; }
-    .btn-secondary:hover { background: #ddd; }
+    button:hover { opacity: 0.85; }
+    button:active { opacity: 0.7; }
 
+    .btn-white   { background: #ffffff; color: var(--c1); font-weight: 600; }
+    .btn-ghost   { background: rgba(255,255,255,0.12); color: var(--text); border: 1px solid var(--line-hi); }
+    .btn-danger  { background: rgba(244,160,160,0.2); color: var(--red); border: 1px solid rgba(244,160,160,0.3); }
+
+    /* CARD */
     .card {
-      background: white; border-radius: 12px; padding: 24px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 20px;
+      background: var(--c2);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 24px;
+      margin-bottom: 20px;
     }
 
-    .card h2 { margin: 0 0 16px; font-size: 18px; color: #555; }
+    .card-title {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
 
-    label { display: block; font-weight: 600; margin-bottom: 4px; color: #555; font-size: 13px; }
+    label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
 
     input[type="text"], textarea {
-      width: 100%; padding: 10px 12px; border: 1px solid #ddd;
-      border-radius: 8px; font-size: 14px; font-family: 'Segoe UI', sans-serif;
-      margin-bottom: 14px; resize: vertical;
+      width: 100%;
+      background: #ffffff;
+      color: #1a2a3a;
+      border: 1px solid #dde3ec;
+      border-radius: 6px;
+      padding: 10px 14px;
+      font-family: var(--font);
+      font-size: 14px;
+      font-weight: 300;
+      margin-bottom: 16px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      resize: vertical;
     }
-    input[type="text"]:focus, textarea:focus { outline: 2px solid #764ba2; border-color: transparent; }
 
-    textarea { min-height: 90px; }
-
-    .status {
-      padding: 10px 16px; border-radius: 8px; font-size: 14px;
-      font-weight: 600; margin-bottom: 16px; display: none;
+    input[type="text"]:focus, textarea:focus {
+      border-color: var(--c4);
+      box-shadow: 0 0 0 3px rgba(112,140,197,0.15);
     }
-    .status.success { background: #d5f5e3; color: #1e8449; display: block; }
-    .status.error   { background: #fdecea; color: #e74c3c; display: block; }
 
-    .empty-state { color: #aaa; font-style: italic; text-align: center; padding: 30px 0; }
+    textarea { min-height: 90px; line-height: 1.6; }
+
+    .card-actions { display: flex; gap: 10px; margin-top: 4px; }
 
     #newSetForm { display: none; }
   </style>
 </head>
 <body>
 
-<h1>📋 Question Set Manager</h1>
-<p class="subtitle">Add, edit, and delete question sets for the TCF Simulator.</p>
-
-<div id="statusMsg" class="status"></div>
-
-<div class="toolbar">
-  <select id="setList"><option value="">— Select a set to edit —</option></select>
-  <button class="btn-primary" onclick="showNewSetForm()">+ New Set</button>
-  <button class="btn-danger" onclick="deleteSet()">Delete Selected</button>
-</div>
-
-<!-- NEW SET FORM -->
-<div class="card" id="newSetForm">
-  <h2>➕ New Question Set</h2>
-  <label>Set Name</label>
-  <input type="text" id="newName" placeholder="e.g. Set 4 — Health" />
-  <label>Set ID (no spaces)</label>
-  <input type="text" id="newId" placeholder="e.g. set4" />
-  <label>Tâche 1 Question</label>
-  <textarea id="newTask1" placeholder="Write the Tâche 1 prompt..."></textarea>
-  <label>Tâche 2 Question</label>
-  <textarea id="newTask2" placeholder="Write the Tâche 2 prompt..."></textarea>
-  <label>Tâche 3 Question</label>
-  <textarea id="newTask3" placeholder="Write the Tâche 3 prompt..."></textarea>
-  <div style="display:flex; gap:10px;">
-    <button class="btn-save" onclick="createSet()">Save New Set</button>
-    <button class="btn-secondary" onclick="hideNewSetForm()">Cancel</button>
+<div class="topbar">
+  <div class="topbar-left">
+    <span class="brand">TCF</span>
+    <span class="brand-sep"></span>
+    <span class="brand-sub">Admin — Question Sets</span>
   </div>
+  <a href="/index.html" style="color:var(--text-muted);font-size:12px;text-decoration:none;">← Exam</a>
 </div>
 
-<!-- EDIT FORM -->
-<div class="card" id="editForm" style="display:none;">
-  <h2>✏️ Edit Set</h2>
-  <label>Set Name</label>
-  <input type="text" id="editName" />
-  <label>Tâche 1 Question</label>
-  <textarea id="editTask1"></textarea>
-  <label>Tâche 2 Question</label>
-  <textarea id="editTask2"></textarea>
-  <label>Tâche 3 Question</label>
-  <textarea id="editTask3"></textarea>
-  <button class="btn-save" onclick="saveEdit()">💾 Save Changes</button>
+<div class="content">
+
+  <div id="statusMsg" class="status-msg"></div>
+
+  <div class="toolbar">
+    <select id="setList"><option value="">— Select a set to edit —</option></select>
+    <button class="btn-white" onclick="showNewSetForm()">+ New Set</button>
+    <button class="btn-danger" onclick="deleteSet()">Delete</button>
+  </div>
+
+  <!-- NEW SET FORM -->
+  <div class="card" id="newSetForm">
+    <div class="card-title">New Question Set</div>
+    <label>Set Name</label>
+    <input type="text" id="newName" placeholder="e.g. Set 4 — Health" />
+    <label>Set ID (no spaces)</label>
+    <input type="text" id="newId" placeholder="e.g. set4" />
+    <label>Tâche 1 Question</label>
+    <textarea id="newTask1" placeholder="Write the Tâche 1 prompt..."></textarea>
+    <label>Tâche 2 Question</label>
+    <textarea id="newTask2" placeholder="Write the Tâche 2 prompt..."></textarea>
+    <label>Tâche 3 Question</label>
+    <textarea id="newTask3" placeholder="Write the Tâche 3 prompt..."></textarea>
+    <div class="card-actions">
+      <button class="btn-white" onclick="createSet()">Save New Set</button>
+      <button class="btn-ghost" onclick="hideNewSetForm()">Cancel</button>
+    </div>
+  </div>
+
+  <!-- EDIT FORM -->
+  <div class="card" id="editForm" style="display:none;">
+    <div class="card-title">Edit Set</div>
+    <label>Set Name</label>
+    <input type="text" id="editName" />
+    <label>Tâche 1 Question</label>
+    <textarea id="editTask1"></textarea>
+    <label>Tâche 2 Question</label>
+    <textarea id="editTask2"></textarea>
+    <label>Tâche 3 Question</label>
+    <textarea id="editTask3"></textarea>
+    <div class="card-actions">
+      <button class="btn-white" onclick="saveEdit()">Save Changes</button>
+    </div>
+  </div>
+
 </div>
 
 <script>
@@ -119,7 +246,7 @@
       allData = await res.json();
       renderList();
     } catch {
-      showStatus("Could not connect to server. Make sure it's running.", "error");
+      showStatus("Could not connect to server.", "error");
     }
   }
 
@@ -183,12 +310,8 @@
     const task2 = document.getElementById("newTask2").value.trim();
     const task3 = document.getElementById("newTask3").value.trim();
 
-    if (!name || !id || !task1 || !task2 || !task3) {
-      showStatus("Please fill in all fields.", "error"); return;
-    }
-    if (allData.sets.find(s => s.id === id)) {
-      showStatus("A set with this ID already exists. Choose a different ID.", "error"); return;
-    }
+    if (!name || !id || !task1 || !task2 || !task3) { showStatus("Please fill in all fields.", "error"); return; }
+    if (allData.sets.find(s => s.id === id)) { showStatus("A set with this ID already exists.", "error"); return; }
 
     allData.sets.push({ id, name, tasks: { task1, task2, task3 } });
     await saveToServer();
@@ -225,7 +348,7 @@
   function showStatus(msg, type) {
     const el = document.getElementById("statusMsg");
     el.textContent = msg;
-    el.className = "status " + type;
+    el.className = "status-msg " + type;
     setTimeout(() => { el.style.display = "none"; }, 3500);
   }
 
