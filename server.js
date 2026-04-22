@@ -75,6 +75,11 @@ app.get("/writings", (req, res) => {
   }
 });
 
+// ── Root redirect to landing page ────────────────────────────
+app.get("/", (req, res) => {
+  res.redirect("/landing.html");
+});
+
 // ── Static files ───────────────────────────────────────────
 app.use(express.static(path.join(__dirname)));
 

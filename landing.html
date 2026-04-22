@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TCF — Simulateur d'Expression Écrite</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --c1: #42587D;
+      --c2: #4D6691;
+      --c3: #5673A7;
+      --c4: #708CC5;
+      --c5: #9FADCB;
+      --line: rgba(255,255,255,0.12);
+      --line-hi: rgba(255,255,255,0.25);
+      --text: #ffffff;
+      --text-muted: rgba(255,255,255,0.65);
+      --font-display: 'DM Serif Display', serif;
+      --font: 'DM Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font);
+      background: var(--c1);
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      background: rgba(66,88,125,0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .nav-logo {
+      font-family: var(--font);
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      color: var(--text);
+      text-transform: uppercase;
+    }
+
+    .nav-sep { width: 1px; height: 16px; background: var(--line-hi); }
+
+    .nav-subtitle {
+      font-size: 12px;
+      font-weight: 300;
+      color: var(--text-muted);
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-link {
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 6px 14px;
+      border-radius: 5px;
+      border: 1px solid transparent;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+
+    .nav-link:hover {
+      color: var(--text);
+      border-color: var(--line-hi);
+      background: rgba(255,255,255,0.08);
+    }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 100px 24px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Decorative grid background */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black, transparent);
+      pointer-events: none;
+    }
+
+    /* Soft glow behind hero */
+    .hero::after {
+      content: '';
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(112,140,197,0.18) 0%, transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      max-width: 720px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid var(--line-hi);
+      border-radius: 100px;
+      padding: 6px 16px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--c5);
+      margin-bottom: 32px;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards;
+    }
+
+    .hero-badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--c5);
+    }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(42px, 7vw, 80px);
+      font-weight: 400;
+      line-height: 1.05;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      margin-bottom: 12px;
+      opacity: 0;
+      animation: fadeUp 0.6s ease 0.1s forwards;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--c5);
+    }
+
+    .hero-sub {
+      font-size: clamp(15px, 2vw, 18px);
+      font-weight: 300;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 48px;
+      max-width: 520px;
+      margin-left: auto;
+      margin-right: auto;
+      opacity: 0;
+      animation: fadeUp 0.6s ease 0.2s forwards;
+    }
+
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #ffffff;
+      color: var(--c1);
+      font-family: var(--font);
+      font-size: 15px;
+      font-weight: 600;
+      padding: 14px 32px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: opacity 0.15s, transform 0.15s;
+      opacity: 0;
+      animation: fadeUp 0.6s ease 0.3s forwards;
+    }
+
+    .hero-cta:hover { opacity: 0.88; transform: translateY(-1px); }
+    .hero-cta:active { transform: scale(0.98); }
+
+    .hero-cta-arrow {
+      font-size: 18px;
+      transition: transform 0.15s;
+    }
+
+    .hero-cta:hover .hero-cta-arrow { transform: translateX(3px); }
+
+    /* ── FEATURES ── */
+    .features {
+      padding: 100px 24px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.25em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 400;
+      text-align: center;
+      margin-bottom: 60px;
+      line-height: 1.2;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .feature-card {
+      background: var(--c2);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 28px 24px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .feature-card:hover {
+      border-color: var(--line-hi);
+      transform: translateY(-2px);
+    }
+
+    .feature-icon {
+      font-size: 24px;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .feature-title {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .feature-desc {
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+
+    /* ── TASKS ── */
+    .tasks {
+      padding: 80px 24px;
+      background: var(--c2);
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .tasks-inner {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .tasks-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 48px;
+    }
+
+    .task-card {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 24px;
+      background: rgba(255,255,255,0.05);
+    }
+
+    .task-num {
+      font-family: var(--font-display);
+      font-size: 36px;
+      font-weight: 400;
+      color: var(--c5);
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+
+    .task-name {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .task-desc {
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--text-muted);
+      line-height: 1.65;
+    }
+
+    /* ── BOTTOM CTA ── */
+    .bottom-cta {
+      padding: 120px 24px;
+      text-align: center;
+    }
+
+    .bottom-cta-title {
+      font-family: var(--font-display);
+      font-size: clamp(32px, 5vw, 56px);
+      font-weight: 400;
+      margin-bottom: 16px;
+      line-height: 1.1;
+    }
+
+    .bottom-cta-sub {
+      font-size: 15px;
+      font-weight: 300;
+      color: var(--text-muted);
+      margin-bottom: 40px;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 24px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-brand {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 20px;
+    }
+
+    .footer-links a {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
+    .footer-links a:hover { color: var(--text); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      nav { padding: 0 20px; }
+      .nav-subtitle { display: none; }
+      .nav-sep { display: none; }
+      .nav-link { padding: 6px 10px; font-size: 11px; }
+
+      .hero { padding: 90px 20px 60px; }
+
+      .features-grid { grid-template-columns: 1fr; }
+      .tasks-grid { grid-template-columns: 1fr; }
+
+      footer { flex-direction: column; gap: 16px; text-align: center; }
+      .footer-links { justify-content: center; }
+    }
+
+    @media (max-width: 480px) {
+      .nav-right { gap: 4px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="/landing.html" class="nav-brand">
+    <span class="nav-logo">TCF</span>
+    <span class="nav-sep"></span>
+    <span class="nav-subtitle">Expression Écrite</span>
+  </a>
+  <div class="nav-right">
+    <a href="/dashboard.html" class="nav-link">Dashboard</a>
+    <a href="/admin.html" class="nav-link">Admin</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">Simulateur officiel</div>
+    <h1 class="hero-title">Préparez votre<br><em>TCF Canada</em></h1>
+    <p class="hero-sub">
+      Entraînez-vous aux trois tâches d'expression écrite dans des conditions réelles d'examen — minuterie, interface épurée, soumission en un clic.
+    </p>
+    <a href="/index.html" class="hero-cta">
+      Commencer l'examen
+      <span class="hero-cta-arrow">→</span>
+    </a>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features">
+  <div class="section-label">Pourquoi ce simulateur</div>
+  <h2 class="section-title">Tout ce qu'il vous faut<br>pour réussir</h2>
+  <div class="features-grid">
+    <div class="feature-card">
+      <span class="feature-icon">⏱</span>
+      <div class="feature-title">Minuterie réelle</div>
+      <p class="feature-desc">60 minutes chronométrées comme lors du vrai examen. Alerte visuelle dans les 5 dernières minutes.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">📋</span>
+      <div class="feature-title">Sujets variés</div>
+      <p class="feature-desc">Plusieurs séries de sujets couvrant différents thèmes — vie quotidienne, éducation, environnement et plus.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">✉️</span>
+      <div class="feature-title">Soumission directe</div>
+      <p class="feature-desc">Vos réponses sont envoyées directement à votre enseignant à la fin de l'examen.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">📱</span>
+      <div class="feature-title">Tous appareils</div>
+      <p class="feature-desc">Interface optimisée pour ordinateur, tablette et mobile — passez l'examen depuis n'importe où.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🔢</span>
+      <div class="feature-title">Compteur de mots</div>
+      <p class="feature-desc">Suivez en temps réel le nombre de mots rédigés pour respecter les exigences de chaque tâche.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🎯</span>
+      <div class="feature-title">Interface sans distraction</div>
+      <p class="feature-desc">Un environnement sobre et concentré, conçu pour vous laisser vous focaliser entièrement sur l'écriture.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TASKS -->
+<section class="tasks">
+  <div class="tasks-inner">
+    <div class="section-label">Structure de l'examen</div>
+    <h2 class="section-title">Trois tâches d'écriture</h2>
+    <div class="tasks-grid">
+      <div class="task-card">
+        <div class="task-num">01</div>
+        <div class="task-name">Tâche 1 — Message personnel</div>
+        <p class="task-desc">Répondez à un message ou un courriel en donnant des informations, des conseils ou des opinions personnelles.</p>
+      </div>
+      <div class="task-card">
+        <div class="task-num">02</div>
+        <div class="task-name">Tâche 2 — Article ou texte formel</div>
+        <p class="task-desc">Rédigez un article, une lettre formelle ou un texte argumentatif sur un sujet donné (150–200 mots).</p>
+      </div>
+      <div class="task-card">
+        <div class="task-num">03</div>
+        <div class="task-name">Tâche 3 — Expression d'opinion</div>
+        <p class="task-desc">Exprimez et justifiez votre point de vue sur une question de société avec des exemples concrets.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BOTTOM CTA -->
+<section class="bottom-cta">
+  <h2 class="bottom-cta-title">Prêt à vous entraîner ?</h2>
+  <p class="bottom-cta-sub">Choisissez un sujet et commencez votre simulation dès maintenant.</p>
+  <a href="/index.html" class="hero-cta">
+    Accéder à l'examen
+    <span class="hero-cta-arrow">→</span>
+  </a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-brand">TCF — Expression Écrite</span>
+  <div class="footer-links">
+    <a href="/index.html">Examen</a>
+    <a href="/dashboard.html">Dashboard</a>
+    <a href="/admin.html">Admin</a>
+  </div>
+</footer>
+
+</body>
+</html>
