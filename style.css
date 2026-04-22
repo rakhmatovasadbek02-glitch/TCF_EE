@@ -137,15 +137,15 @@ html, body {
 }
 
 .btn-start {
-  background: rgba(255,255,255,0.14);
-  color: var(--text);
-  border: 1px solid var(--line-hi);
+  background: #ffffff;
+  color: var(--c1);
+  font-weight: 600;
 }
-.btn-start:hover { background: rgba(255,255,255,0.22); }
+.btn-start:hover { opacity: 0.88; }
 .btn-start:active { transform: scale(0.97); }
 
 .btn-submit {
-  background: var(--accent);
+  background: #ffffff;
   color: var(--c1);
   font-weight: 600;
 }
@@ -224,9 +224,9 @@ html, body {
 }
 
 .task-btn {
-  background: none;
-  border: none;
-  color: var(--text-dim);
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.75);
   font-family: var(--font);
   font-size: 12px;
   font-weight: 400;
@@ -238,11 +238,12 @@ html, body {
   -webkit-tap-highlight-color: transparent;
 }
 
-.task-btn:hover { color: var(--text); background: rgba(255,255,255,0.08); }
+.task-btn:hover { color: var(--c1); background: #ffffff; border-color: #ffffff; }
 
 .task-btn.active {
   color: var(--c1);
-  background: var(--accent);
+  background: #ffffff;
+  border-color: #ffffff;
   font-weight: 600;
 }
 
@@ -293,7 +294,7 @@ html, body {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background: #f5f7fa;
+  background: #42587D;
 }
 
 .task-area {
