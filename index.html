@@ -1,81 +1,99 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TCF Simulator</title>
+  <title>TCF — Expression Écrite</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
+<body>
 
-<body class="light">
-
-<!-- TOP BAR -->
-<div class="topbar">
-  <div class="logo">TCF Simulator</div>
-  <div id="timer" class="timer">60:00</div>
-  <div class="top-right">
-    <span id="lightMode">☀️</span>
-    <span id="darkMode">🌙</span>
-    <button id="fullscreenBtn">⛶</button>
+<!-- HEADER -->
+<header class="header">
+  <div class="header-stripe header-stripe--blue"></div>
+  <div class="header-inner">
+    <div class="header-left">
+      <div class="fleur-de-lis">⚜</div>
+      <div class="header-titles">
+        <span class="header-label">TEST DE CONNAISSANCE DU FRANÇAIS</span>
+        <span class="header-sub">Expression Écrite</span>
+      </div>
+    </div>
+    <div class="header-center">
+      <div id="timer" class="timer">60:00</div>
+      <div class="timer-label">TEMPS RESTANT</div>
+    </div>
+    <div class="header-right">
+      <div class="maple-leaf">🍁</div>
+    </div>
   </div>
-</div>
+  <div class="header-stripe header-stripe--red"></div>
+</header>
 
-<!-- MAIN -->
-<div class="container">
-
-  <!-- SET SELECTOR -->
-  <div class="set-selector">
+<!-- SETUP BAR -->
+<div class="setup-bar">
+  <div class="setup-inner">
+    <label class="setup-label" for="setSelect">SUJET D'EXAMEN</label>
     <select id="setSelect"></select>
-    <span id="setStatus"></span>
-  </div>
-
-  <div class="controls">
-    <button onclick="startTimer()">Start</button>
-    <button onclick="saveWriting()">Submit</button>
-  </div>
-
-  <div class="task-buttons">
-    <button onclick="selectTask(1)" class="active">Tâche 1</button>
-    <button onclick="selectTask(2)">Tâche 2</button>
-    <button onclick="selectTask(3)">Tâche 3</button>
-  </div>
-
-  <div class="exam-layout">
-
-    <!-- LEFT -->
-    <div class="question-box">
-      <p id="questionText">← Choose a question set to begin.</p>
+    <span id="setStatus" class="set-status"></span>
+    <div class="setup-actions">
+      <button class="btn btn--start" onclick="startTimer()">▶ Commencer</button>
+      <button class="btn btn--submit" onclick="saveWriting()">✓ Soumettre</button>
     </div>
-
-    <!-- RIGHT -->
-    <div class="writing-box">
-
-      <div class="task" id="taskBox1">
-        <div class="textarea-wrapper">
-          <textarea id="task1" placeholder="Write your answer..." disabled></textarea>
-          <p id="count1" class="word-count">0 words</p>
-        </div>
-      </div>
-
-      <div class="task" id="taskBox2" style="display:none;">
-        <div class="textarea-wrapper">
-          <textarea id="task2" placeholder="Write your answer..." disabled></textarea>
-          <p id="count2" class="word-count">0 words</p>
-        </div>
-      </div>
-
-      <div class="task" id="taskBox3" style="display:none;">
-        <div class="textarea-wrapper">
-          <textarea id="task3" placeholder="Write your answer..." disabled></textarea>
-          <p id="count3" class="word-count">0 words</p>
-        </div>
-      </div>
-
-    </div>
-
   </div>
-
 </div>
+
+<!-- TASK TABS -->
+<nav class="task-nav">
+  <button class="task-tab active" onclick="selectTask(1)">
+    <span class="tab-num">01</span>
+    <span class="tab-label">Tâche 1</span>
+  </button>
+  <button class="task-tab" onclick="selectTask(2)">
+    <span class="tab-num">02</span>
+    <span class="tab-label">Tâche 2</span>
+  </button>
+  <button class="task-tab" onclick="selectTask(3)">
+    <span class="tab-num">03</span>
+    <span class="tab-label">Tâche 3</span>
+  </button>
+</nav>
+
+<!-- MAIN EXAM AREA -->
+<main class="exam-main">
+
+  <div class="question-panel">
+    <div class="question-tag">CONSIGNE</div>
+    <p id="questionText" class="question-text">Sélectionnez un sujet d'examen pour commencer.</p>
+  </div>
+
+  <div class="writing-panel">
+
+    <div class="task-area" id="taskBox1">
+      <textarea id="task1" placeholder="Rédigez votre réponse ici…" disabled></textarea>
+      <div class="writing-footer">
+        <span id="count1" class="word-count">0 mot</span>
+      </div>
+    </div>
+
+    <div class="task-area" id="taskBox2" style="display:none;">
+      <textarea id="task2" placeholder="Rédigez votre réponse ici…" disabled></textarea>
+      <div class="writing-footer">
+        <span id="count2" class="word-count">0 mot</span>
+      </div>
+    </div>
+
+    <div class="task-area" id="taskBox3" style="display:none;">
+      <textarea id="task3" placeholder="Rédigez votre réponse ici…" disabled></textarea>
+      <div class="writing-footer">
+        <span id="count3" class="word-count">0 mot</span>
+      </div>
+    </div>
+
+  </div>
+
+</main>
 
 <script src="script.js"></script>
 </body>

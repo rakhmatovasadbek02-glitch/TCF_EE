@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const sets = data.sets || [];
 
       const select = document.getElementById("setSelect");
-      select.innerHTML = '<option value="">— Choose a question set —</option>';
+      select.innerHTML = '<option value="">— Choisir un sujet —</option>';
       sets.forEach(s => {
         const opt = document.createElement("option");
         opt.value = s.id;
@@ -28,11 +28,11 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!chosen) return;
         questions = [chosen.tasks.task1, chosen.tasks.task2, chosen.tasks.task3];
         document.getElementById("questionText").textContent = questions[0];
-        document.getElementById("setStatus").textContent = "✔ Set loaded: " + chosen.name;
+        document.getElementById("setStatus").textContent = "✔ " + chosen.name;
       });
 
     } catch (err) {
-      document.getElementById("setStatus").textContent = "⚠ Could not load question sets. Is the server running?";
+      document.getElementById("setStatus").textContent = "⚠ Impossible de charger les sujets.";
     }
   }
 
@@ -44,8 +44,11 @@ document.addEventListener("DOMContentLoaded", () => {
   function updateDisplay() {
     let m = Math.floor(timeLeft / 60);
     let s = timeLeft % 60;
-    document.getElementById("timer").textContent =
-      `${m}:${s < 10 ? "0" : ""}${s}`;
+    const el = document.getElementById("timer");
+    el.textContent = `${m}:${s < 10 ? "0" : ""}${s}`;
+    // Warning color under 5 minutes
+    if (timeLeft <= 300) el.classList.add("warning");
+    else el.classList.remove("warning");
   }
 
   updateDisplay();
@@ -58,7 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const select = document.getElementById("setSelect");
     if (!select.value) {
-      select.style.outline = "2px solid gold";
+      select.style.outline = "2px solid #C9A84C";
       setTimeout(() => select.style.outline = "", 800);
       return;
     }
@@ -68,7 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const areas = document.querySelectorAll("textarea");
     areas.forEach(a => a.disabled = true);
 
-    const visible = document.querySelector(".task:not([style*='none']) textarea");
+    const visible = document.querySelector(".task-area:not([style*='none']) textarea");
     if (visible) {
       visible.disabled = false;
       visible.focus();
@@ -82,7 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
         clearInterval(timer);
         isRunning = false;
         areas.forEach(a => a.disabled = true);
-        alert("Time is up!");
+        alert("Le temps est écoulé !");
       }
     }, 1000);
   };
@@ -100,9 +103,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // ========================
   window.selectTask = function (num) {
     if (!isRunning) {
-      const startBtn = document.querySelector(".controls button");
+      const startBtn = document.querySelector(".btn--start");
       if (startBtn) {
-        startBtn.style.transform = "scale(1.15)";
+        startBtn.style.transform = "scale(1.1)";
         setTimeout(() => startBtn.style.transform = "scale(1)", 200);
       }
       return;
@@ -118,13 +121,13 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("task2"),
       document.getElementById("task3")
     ];
-    const buttons = document.querySelectorAll(".task-buttons button");
+    const tabs = document.querySelectorAll(".task-tab");
 
     boxes.forEach(b => b.style.display = "none");
-    boxes[num - 1].style.display = "block";
+    boxes[num - 1].style.display = "flex";
 
-    buttons.forEach(b => b.classList.remove("active"));
-    buttons[num - 1].classList.add("active");
+    tabs.forEach(t => t.classList.remove("active"));
+    tabs[num - 1].classList.add("active");
 
     document.getElementById("questionText").textContent = questions[num - 1];
 
@@ -138,9 +141,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // ========================
   function countWords(t) {
     const trimmed = t.trim();
-    if (!trimmed) return "0 words";
+    if (!trimmed) return "0 mot";
     const count = trimmed.split(/\s+/).length;
-    return count === 1 ? "1 word" : `${count} words`;
+    return count === 1 ? "1 mot" : `${count} mots`;
   }
 
   ["1", "2", "3"].forEach(n => {
@@ -155,9 +158,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // ========================
   window.saveWriting = function () {
     if (!isRunning && timeLeft === 3600) {
-      const startBtn = document.querySelector(".controls button");
+      const startBtn = document.querySelector(".btn--start");
       if (startBtn) {
-        startBtn.style.transform = "scale(1.15)";
+        startBtn.style.transform = "scale(1.1)";
         setTimeout(() => startBtn.style.transform = "scale(1)", 200);
       }
       return;
@@ -170,21 +173,36 @@ document.addEventListener("DOMContentLoaded", () => {
     modal.id = "nameModal";
     modal.style.cssText = `
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5); display: flex;
+      background: rgba(0,35,149,0.55); display: flex;
       align-items: center; justify-content: center; z-index: 999;
+      backdrop-filter: blur(3px);
     `;
 
     modal.innerHTML = `
       <div style="
-        background: white; color: #333; padding: 30px; border-radius: 16px;
-        display: flex; flex-direction: column; gap: 12px; min-width: 280px;
+        background: white; color: #1a1a2e; padding: 36px 32px;
+        border-radius: 8px; display: flex; flex-direction: column;
+        gap: 14px; min-width: 320px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+        border-top: 4px solid #002395;
       ">
-        <h3 style="margin:0">Enter your name</h3>
-        <input id="studentNameInput" type="text" placeholder="Your full name"
-          style="padding: 10px; border-radius: 8px; border: 1px solid #ccc; font-size: 15px;" />
-        <div style="display:flex; gap:10px; justify-content: flex-end;">
-          <button id="cancelSubmit" style="padding: 8px 16px; border-radius:8px; border:none; cursor:pointer; background:#eee;">Cancel</button>
-          <button id="confirmSubmit" style="padding: 8px 16px; border-radius:8px; border:none; cursor:pointer; background:#764ba2; color:white; font-weight:600;">Submit</button>
+        <div style="font-family:'Playfair Display',serif; font-size:18px; font-weight:700; color:#002395;">
+          Identification du candidat
+        </div>
+        <div style="font-size:13px; color:#666; margin-top:-6px;">Entrez votre nom complet avant de soumettre.</div>
+        <input id="studentNameInput" type="text" placeholder="Nom et prénom"
+          style="padding: 10px 14px; border-radius: 4px; border: 1px solid #ccc;
+                 font-size: 14px; font-family:'Source Sans 3',sans-serif; outline:none;" />
+        <div style="display:flex; gap:10px; justify-content: flex-end; margin-top:4px;">
+          <button id="cancelSubmit" style="padding: 8px 18px; border-radius:4px; border:1px solid #ddd;
+            cursor:pointer; background:white; font-family:'Source Sans 3',sans-serif; font-size:13px;">
+            Annuler
+          </button>
+          <button id="confirmSubmit" style="padding: 8px 20px; border-radius:4px; border:none;
+            cursor:pointer; background:#C1272D; color:white; font-weight:600;
+            font-family:'Source Sans 3',sans-serif; font-size:13px;">
+            Soumettre
+          </button>
         </div>
       </div>
     `;
@@ -195,7 +213,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function submitModal() {
       const student = input.value.trim();
-      if (!student) { alert("Please enter your name."); return; }
+      if (!student) { input.style.borderColor = "#C1272D"; return; }
 
       const content = {
         task1: document.getElementById("task1").value,
@@ -213,30 +231,13 @@ document.addEventListener("DOMContentLoaded", () => {
         body: JSON.stringify({ student, content })
       })
         .then(res => res.json())
-        .then(() => alert("Submitted successfully!"))
-        .catch(() => alert("Error submitting. Is the server running?"));
+        .then(() => alert("Copie soumise avec succès !"))
+        .catch(() => alert("Erreur de soumission. Le serveur est-il en marche ?"));
     }
 
     document.getElementById("cancelSubmit").onclick = () => document.body.removeChild(modal);
     document.getElementById("confirmSubmit").onclick = submitModal;
     input.addEventListener("keydown", e => { if (e.key === "Enter") submitModal(); });
-  };
-
-  // ========================
-  // THEME
-  // ========================
-  document.getElementById("lightMode").onclick = () => { document.body.className = "light"; };
-  document.getElementById("darkMode").onclick = () => { document.body.className = "dark"; };
-
-  // ========================
-  // FULLSCREEN
-  // ========================
-  document.getElementById("fullscreenBtn").onclick = () => {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen();
-    } else {
-      document.exitFullscreen();
-    }
   };
 
 });
