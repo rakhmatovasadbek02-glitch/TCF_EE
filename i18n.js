@@ -315,21 +315,116 @@ function t(key) {
 }
 
 // Render language toggle buttons — call this on every page
+const LANG_FLAGS = {
+  fr: { flag: "🇫🇷", name: "Français" },
+  en: { flag: "🇬🇧", name: "English" },
+  ru: { flag: "🇷🇺", name: "Русский" },
+  uz: { flag: "🇺🇿", name: "O'zbek" },
+};
+
 function renderLangToggle(containerId) {
   const container = document.getElementById(containerId);
   if (!container) return;
-  const langs = [
-    { code: "fr", label: "FR" },
-    { code: "en", label: "EN" },
-    { code: "ru", label: "RU" },
-    { code: "uz", label: "UZ" },
-  ];
-  container.innerHTML = langs.map(l => `
-    <button
-      class="lang-btn ${getLang() === l.code ? "active" : ""}"
-      onclick="switchLang('${l.code}')"
-    >${l.label}</button>
-  `).join("");
+
+  // Inject styles once
+  if (!document.getElementById("langDropdownStyle")) {
+    const style = document.createElement("style");
+    style.id = "langDropdownStyle";
+    style.textContent = `
+      .lang-dropdown { position: relative; display: inline-block; }
+      .lang-current {
+        display: flex; align-items: center; gap: 6px;
+        background: rgba(255,255,255,0.12);
+        border: 1px solid rgba(255,255,255,0.25);
+        border-radius: 6px; padding: 5px 10px;
+        cursor: pointer; font-family: inherit;
+        font-size: 18px; line-height: 1;
+        transition: background 0.15s;
+        user-select: none;
+      }
+      .lang-current:hover { background: rgba(255,255,255,0.22); }
+      .lang-current .lang-chevron {
+        font-size: 9px; color: rgba(255,255,255,0.6);
+        transition: transform 0.2s;
+        margin-left: 2px;
+      }
+      .lang-current.open .lang-chevron { transform: rotate(180deg); }
+      .lang-menu {
+        display: none;
+        position: absolute; top: calc(100% + 6px); right: 0;
+        background: #4D6691;
+        border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+        z-index: 1000;
+        min-width: 140px;
+        animation: dropIn 0.15s ease;
+      }
+      .lang-menu.open { display: block; }
+      @keyframes dropIn { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
+      .lang-option {
+        display: flex; align-items: center; gap: 10px;
+        padding: 10px 14px;
+        cursor: pointer;
+        font-size: 13px; font-weight: 400;
+        color: rgba(255,255,255,0.85);
+        font-family: inherit;
+        background: none; border: none; width: 100%; text-align: left;
+        transition: background 0.12s;
+      }
+      .lang-option:hover { background: rgba(255,255,255,0.1); color: #fff; }
+      .lang-option.active { color: #fff; font-weight: 600; background: rgba(255,255,255,0.08); }
+      .lang-option .lang-flag { font-size: 20px; line-height: 1; }
+    `;
+    document.head.appendChild(style);
+  }
+
+  const current = getLang();
+  const currentFlag = LANG_FLAGS[current].flag;
+  const id = "langDrop_" + containerId;
+
+  container.innerHTML = `
+    <div class="lang-dropdown" id="${id}">
+      <button class="lang-current" onclick="toggleLangMenu('${id}')" id="${id}_btn">
+        <span style="font-size:20px;line-height:1">${currentFlag}</span>
+        <span class="lang-chevron">▼</span>
+      </button>
+      <div class="lang-menu" id="${id}_menu">
+        ${Object.entries(LANG_FLAGS).map(([code, info]) => `
+          <button class="lang-option ${code === current ? "active" : ""}" onclick="switchLang('${code}')">
+            <span class="lang-flag">${info.flag}</span>
+            <span>${info.name}</span>
+          </button>
+        `).join("")}
+      </div>
+    </div>
+  `;
+
+  // Close on outside click
+  document.addEventListener("click", function closeMenu(e) {
+    const drop = document.getElementById(id);
+    if (drop && !drop.contains(e.target)) {
+      const menu = document.getElementById(id + "_menu");
+      const btn = document.getElementById(id + "_btn");
+      if (menu) menu.classList.remove("open");
+      if (btn) btn.classList.remove("open");
+    }
+  });
+}
+
+function toggleLangMenu(id) {
+  const menu = document.getElementById(id + "_menu");
+  const btn = document.getElementById(id + "_btn");
+  if (!menu) return;
+  const isOpen = menu.classList.contains("open");
+  // Close all other open menus first
+  document.querySelectorAll(".lang-menu.open").forEach(m => m.classList.remove("open"));
+  document.querySelectorAll(".lang-current.open").forEach(b => b.classList.remove("open"));
+  if (!isOpen) {
+    menu.classList.add("open");
+    btn.classList.add("open");
+  }
 }
 
 function switchLang(lang) {
