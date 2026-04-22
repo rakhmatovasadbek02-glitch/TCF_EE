@@ -1,0 +1,31 @@
+{
+  "sets": [
+    {
+      "id": "set1",
+      "name": "Set 1 — Daily Life",
+      "tasks": {
+        "task1": "Tâche 1: You received an email from a friend asking for advice about moving to a new city. Reply to their email and give at least three pieces of advice.",
+        "task2": "Tâche 2: Write an article for a local magazine about the advantages and disadvantages of living in a big city versus a small town. (150–200 words)",
+        "task3": "Tâche 3: Some people believe that technology has made our lives easier, while others think it has created new problems. Give your opinion and justify it with examples."
+      }
+    },
+    {
+      "id": "set2",
+      "name": "Set 2 — Education",
+      "tasks": {
+        "task1": "Tâche 1: A classmate has written to you saying they are struggling with online learning. Reply to their message and suggest ways to stay motivated.",
+        "task2": "Tâche 2: Write an article about the importance of learning foreign languages in today's world. Give arguments for and against making it compulsory in schools. (150–200 words)",
+        "task3": "Tâche 3: Do you think that universities should be free for all students? Give your opinion and support it with concrete examples."
+      }
+    },
+    {
+      "id": "set3",
+      "name": "Set 3 — Environment",
+      "tasks": {
+        "task1": "Tâche 1: You have received an email from a colleague inviting you to join a local environmental volunteer group. Reply and explain whether you will join and why.",
+        "task2": "Tâche 2: Write an article for a school newspaper about what individuals can do in their daily lives to help protect the environment. (150–200 words)",
+        "task3": "Tâche 3: Some people argue that governments, not individuals, are responsible for solving environmental problems. Do you agree or disagree? Justify your answer."
+      }
+    }
+  ]
+}

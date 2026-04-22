@@ -3,15 +3,40 @@ document.addEventListener("DOMContentLoaded", () => {
   let timeLeft = 3600;
   let timer;
   let isRunning = false;
+  let questions = ["", "", ""];
 
-  // QUESTIONS
-  const questions = [
-    "Tâche 1: Reply to an email and give advice.",
-    "Tâche 2: Write an article about education.",
-    "Tâche 3: Give your opinion on technology."
-  ];
+  // ========================
+  // LOAD QUESTION SETS
+  // ========================
+  async function loadQuestionSets() {
+    try {
+      const res = await fetch("http://localhost:3000/questions");
+      const data = await res.json();
+      const sets = data.sets || [];
 
-  document.getElementById("questionText").textContent = questions[0];
+      const select = document.getElementById("setSelect");
+      select.innerHTML = '<option value="">— Choose a question set —</option>';
+      sets.forEach(s => {
+        const opt = document.createElement("option");
+        opt.value = s.id;
+        opt.textContent = s.name;
+        select.appendChild(opt);
+      });
+
+      select.addEventListener("change", () => {
+        const chosen = sets.find(s => s.id === select.value);
+        if (!chosen) return;
+        questions = [chosen.tasks.task1, chosen.tasks.task2, chosen.tasks.task3];
+        document.getElementById("questionText").textContent = questions[0];
+        document.getElementById("setStatus").textContent = "✔ Set loaded: " + chosen.name;
+      });
+
+    } catch (err) {
+      document.getElementById("setStatus").textContent = "⚠ Could not load question sets. Is the server running?";
+    }
+  }
+
+  loadQuestionSets();
 
   // ========================
   // TIMER DISPLAY
@@ -30,6 +55,14 @@ document.addEventListener("DOMContentLoaded", () => {
   // ========================
   window.startTimer = function () {
     if (isRunning) return;
+
+    const select = document.getElementById("setSelect");
+    if (!select.value) {
+      select.style.outline = "2px solid gold";
+      setTimeout(() => select.style.outline = "", 800);
+      return;
+    }
+
     isRunning = true;
 
     const areas = document.querySelectorAll("textarea");
@@ -67,7 +100,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // ========================
   window.selectTask = function (num) {
     if (!isRunning) {
-      // Pulse the Start button as a hint instead of blocking with an alert
       const startBtn = document.querySelector(".controls button");
       if (startBtn) {
         startBtn.style.transform = "scale(1.15)";
@@ -81,13 +113,11 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("taskBox2"),
       document.getElementById("taskBox3")
     ];
-
     const areas = [
       document.getElementById("task1"),
       document.getElementById("task2"),
       document.getElementById("task3")
     ];
-
     const buttons = document.querySelectorAll(".task-buttons button");
 
     boxes.forEach(b => b.style.display = "none");
@@ -99,11 +129,8 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("questionText").textContent = questions[num - 1];
 
     areas.forEach(a => a.disabled = true);
-
-    if (isRunning) {
-      areas[num - 1].disabled = false;
-      areas[num - 1].focus();
-    }
+    areas[num - 1].disabled = false;
+    areas[num - 1].focus();
   };
 
   // ========================
@@ -163,16 +190,12 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
 
     document.body.appendChild(modal);
-
     const input = document.getElementById("studentNameInput");
     input.focus();
 
     function submitModal() {
       const student = input.value.trim();
-      if (!student) {
-        alert("Please enter your name.");
-        return;
-      }
+      if (!student) { alert("Please enter your name."); return; }
 
       const content = {
         task1: document.getElementById("task1").value,
@@ -194,28 +217,16 @@ document.addEventListener("DOMContentLoaded", () => {
         .catch(() => alert("Error submitting. Is the server running?"));
     }
 
-    document.getElementById("cancelSubmit").onclick = () => {
-      document.body.removeChild(modal);
-    };
-
+    document.getElementById("cancelSubmit").onclick = () => document.body.removeChild(modal);
     document.getElementById("confirmSubmit").onclick = submitModal;
-
-    // FIX 5: Enter key triggers submit in the modal
-    input.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") submitModal();
-    });
+    input.addEventListener("keydown", e => { if (e.key === "Enter") submitModal(); });
   };
 
   // ========================
   // THEME
   // ========================
-  document.getElementById("lightMode").onclick = () => {
-    document.body.className = "light";
-  };
-
-  document.getElementById("darkMode").onclick = () => {
-    document.body.className = "dark";
-  };
+  document.getElementById("lightMode").onclick = () => { document.body.className = "light"; };
+  document.getElementById("darkMode").onclick = () => { document.body.className = "dark"; };
 
   // ========================
   // FULLSCREEN

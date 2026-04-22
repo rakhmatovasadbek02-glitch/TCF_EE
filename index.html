@@ -13,7 +13,6 @@
 <div class="topbar">
   <div class="logo">TCF Simulator</div>
   <div id="timer" class="timer">60:00</div>
-
   <div class="top-right">
     <span id="lightMode">☀️</span>
     <span id="darkMode">🌙</span>
@@ -24,8 +23,13 @@
 <!-- MAIN -->
 <div class="container">
 
+  <!-- SET SELECTOR -->
+  <div class="set-selector">
+    <select id="setSelect"></select>
+    <span id="setStatus"></span>
+  </div>
+
   <div class="controls">
-    <!-- FIX 2: removed unused id="startBtn", button is called via onclick -->
     <button onclick="startTimer()">Start</button>
     <button onclick="saveWriting()">Submit</button>
   </div>
@@ -40,7 +44,7 @@
 
     <!-- LEFT -->
     <div class="question-box">
-      <p id="questionText"></p>
+      <p id="questionText">← Choose a question set to begin.</p>
     </div>
 
     <!-- RIGHT -->
@@ -73,7 +77,6 @@
 
 </div>
 
-<!-- FIX 1: timer display is now set dynamically by script.js on load -->
 <script src="script.js"></script>
 </body>
 </html>

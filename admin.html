@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Question Sets</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; margin: 0; padding: 20px; color: #333; }
+
+    h1 { color: #764ba2; margin-bottom: 4px; }
+    .subtitle { color: #888; font-size: 14px; margin-bottom: 24px; }
+
+    .toolbar {
+      display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; align-items: center;
+    }
+
+    select#setList {
+      padding: 8px 12px; border-radius: 8px; border: 1px solid #ccc;
+      font-size: 14px; min-width: 220px;
+    }
+
+    button {
+      padding: 8px 16px; border: none; border-radius: 8px;
+      cursor: pointer; font-size: 14px; font-weight: 600;
+    }
+    .btn-primary { background: #764ba2; color: white; }
+    .btn-primary:hover { background: #5e3a85; }
+    .btn-danger { background: #e74c3c; color: white; }
+    .btn-danger:hover { background: #c0392b; }
+    .btn-save { background: #27ae60; color: white; }
+    .btn-save:hover { background: #1e8449; }
+    .btn-secondary { background: #eee; color: #333; }
+    .btn-secondary:hover { background: #ddd; }
+
+    .card {
+      background: white; border-radius: 12px; padding: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 20px;
+    }
+
+    .card h2 { margin: 0 0 16px; font-size: 18px; color: #555; }
+
+    label { display: block; font-weight: 600; margin-bottom: 4px; color: #555; font-size: 13px; }
+
+    input[type="text"], textarea {
+      width: 100%; padding: 10px 12px; border: 1px solid #ddd;
+      border-radius: 8px; font-size: 14px; font-family: 'Segoe UI', sans-serif;
+      margin-bottom: 14px; resize: vertical;
+    }
+    input[type="text"]:focus, textarea:focus { outline: 2px solid #764ba2; border-color: transparent; }
+
+    textarea { min-height: 90px; }
+
+    .status {
+      padding: 10px 16px; border-radius: 8px; font-size: 14px;
+      font-weight: 600; margin-bottom: 16px; display: none;
+    }
+    .status.success { background: #d5f5e3; color: #1e8449; display: block; }
+    .status.error   { background: #fdecea; color: #e74c3c; display: block; }
+
+    .empty-state { color: #aaa; font-style: italic; text-align: center; padding: 30px 0; }
+
+    #newSetForm { display: none; }
+  </style>
+</head>
+<body>
+
+<h1>📋 Question Set Manager</h1>
+<p class="subtitle">Add, edit, and delete question sets for the TCF Simulator.</p>
+
+<div id="statusMsg" class="status"></div>
+
+<div class="toolbar">
+  <select id="setList"><option value="">— Select a set to edit —</option></select>
+  <button class="btn-primary" onclick="showNewSetForm()">+ New Set</button>
+  <button class="btn-danger" onclick="deleteSet()">Delete Selected</button>
+</div>
+
+<!-- NEW SET FORM -->
+<div class="card" id="newSetForm">
+  <h2>➕ New Question Set</h2>
+  <label>Set Name</label>
+  <input type="text" id="newName" placeholder="e.g. Set 4 — Health" />
+  <label>Set ID (no spaces)</label>
+  <input type="text" id="newId" placeholder="e.g. set4" />
+  <label>Tâche 1 Question</label>
+  <textarea id="newTask1" placeholder="Write the Tâche 1 prompt..."></textarea>
+  <label>Tâche 2 Question</label>
+  <textarea id="newTask2" placeholder="Write the Tâche 2 prompt..."></textarea>
+  <label>Tâche 3 Question</label>
+  <textarea id="newTask3" placeholder="Write the Tâche 3 prompt..."></textarea>
+  <div style="display:flex; gap:10px;">
+    <button class="btn-save" onclick="createSet()">Save New Set</button>
+    <button class="btn-secondary" onclick="hideNewSetForm()">Cancel</button>
+  </div>
+</div>
+
+<!-- EDIT FORM -->
+<div class="card" id="editForm" style="display:none;">
+  <h2>✏️ Edit Set</h2>
+  <label>Set Name</label>
+  <input type="text" id="editName" />
+  <label>Tâche 1 Question</label>
+  <textarea id="editTask1"></textarea>
+  <label>Tâche 2 Question</label>
+  <textarea id="editTask2"></textarea>
+  <label>Tâche 3 Question</label>
+  <textarea id="editTask3"></textarea>
+  <button class="btn-save" onclick="saveEdit()">💾 Save Changes</button>
+</div>
+
+<script>
+  let allData = { sets: [] };
+  let currentSetId = null;
+
+  async function loadData() {
+    try {
+      const res = await fetch("/questions");
+      allData = await res.json();
+      renderList();
+    } catch {
+      showStatus("Could not connect to server. Make sure it's running.", "error");
+    }
+  }
+
+  function renderList() {
+    const sel = document.getElementById("setList");
+    const prev = sel.value;
+    sel.innerHTML = '<option value="">— Select a set to edit —</option>';
+    allData.sets.forEach(s => {
+      const opt = document.createElement("option");
+      opt.value = s.id;
+      opt.textContent = s.name;
+      sel.appendChild(opt);
+    });
+    if (prev) sel.value = prev;
+  }
+
+  document.getElementById("setList").addEventListener("change", function () {
+    const id = this.value;
+    if (!id) { document.getElementById("editForm").style.display = "none"; return; }
+    const set = allData.sets.find(s => s.id === id);
+    if (!set) return;
+    currentSetId = id;
+    document.getElementById("editName").value = set.name;
+    document.getElementById("editTask1").value = set.tasks.task1;
+    document.getElementById("editTask2").value = set.tasks.task2;
+    document.getElementById("editTask3").value = set.tasks.task3;
+    document.getElementById("editForm").style.display = "block";
+    hideNewSetForm();
+  });
+
+  async function saveEdit() {
+    const set = allData.sets.find(s => s.id === currentSetId);
+    if (!set) return;
+    set.name = document.getElementById("editName").value.trim();
+    set.tasks.task1 = document.getElementById("editTask1").value.trim();
+    set.tasks.task2 = document.getElementById("editTask2").value.trim();
+    set.tasks.task3 = document.getElementById("editTask3").value.trim();
+    await saveToServer();
+    renderList();
+    document.getElementById("setList").value = currentSetId;
+  }
+
+  function showNewSetForm() {
+    document.getElementById("newSetForm").style.display = "block";
+    document.getElementById("editForm").style.display = "none";
+    document.getElementById("setList").value = "";
+    document.getElementById("newName").focus();
+  }
+
+  function hideNewSetForm() {
+    document.getElementById("newSetForm").style.display = "none";
+    ["newName","newId","newTask1","newTask2","newTask3"].forEach(id => {
+      document.getElementById(id).value = "";
+    });
+  }
+
+  async function createSet() {
+    const name = document.getElementById("newName").value.trim();
+    const id = document.getElementById("newId").value.trim().replace(/\s+/g, "_");
+    const task1 = document.getElementById("newTask1").value.trim();
+    const task2 = document.getElementById("newTask2").value.trim();
+    const task3 = document.getElementById("newTask3").value.trim();
+
+    if (!name || !id || !task1 || !task2 || !task3) {
+      showStatus("Please fill in all fields.", "error"); return;
+    }
+    if (allData.sets.find(s => s.id === id)) {
+      showStatus("A set with this ID already exists. Choose a different ID.", "error"); return;
+    }
+
+    allData.sets.push({ id, name, tasks: { task1, task2, task3 } });
+    await saveToServer();
+    renderList();
+    hideNewSetForm();
+  }
+
+  async function deleteSet() {
+    const id = document.getElementById("setList").value;
+    if (!id) { showStatus("Select a set to delete first.", "error"); return; }
+    if (!confirm("Delete this set? This cannot be undone.")) return;
+    allData.sets = allData.sets.filter(s => s.id !== id);
+    await saveToServer();
+    renderList();
+    document.getElementById("editForm").style.display = "none";
+    currentSetId = null;
+  }
+
+  async function saveToServer() {
+    try {
+      const res = await fetch("/questions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(allData)
+      });
+      if (!res.ok) throw new Error();
+      showStatus("Saved successfully!", "success");
+    } catch {
+      showStatus("Failed to save. Is the server running?", "error");
+    }
+  }
+
+  function showStatus(msg, type) {
+    const el = document.getElementById("statusMsg");
+    el.textContent = msg;
+    el.className = "status " + type;
+    setTimeout(() => { el.style.display = "none"; }, 3500);
+  }
+
+  loadData();
+</script>
+</body>
+</html>
