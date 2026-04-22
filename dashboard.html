@@ -69,7 +69,7 @@
         }
 
         data.forEach(item => {
-          const c = item.content || {};
+          const c = (item.content && typeof item.content === 'object') ? item.content : {};
           const card = document.createElement("div");
           card.className = "card";
           card.innerHTML = `
@@ -96,6 +96,7 @@
     }
 
     loadData();
+    setInterval(loadData, 30000);
   </script>
 </body>
 </html>

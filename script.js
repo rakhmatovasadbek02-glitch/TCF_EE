@@ -127,6 +127,15 @@ document.addEventListener("DOMContentLoaded", () => {
   // SAVE WRITING
   // ========================
   window.saveWriting = function () {
+    if (!isRunning && timeLeft === 3600) {
+      const startBtn = document.querySelector(".controls button");
+      if (startBtn) {
+        startBtn.style.transform = "scale(1.15)";
+        setTimeout(() => startBtn.style.transform = "scale(1)", 200);
+      }
+      return;
+    }
+
     const existing = document.getElementById("nameModal");
     if (existing) return;
 
