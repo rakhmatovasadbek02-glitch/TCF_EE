@@ -1,25 +1,98 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teacher Dashboard</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; padding: 20px; background: #f4f4f4; }
+    h1 { color: #333; }
+    .card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .card h3 { margin: 0 0 4px; color: #555; }
+    .card .date { font-size: 12px; color: #999; margin-bottom: 12px; }
+    .task-label { font-weight: bold; color: #764ba2; margin-top: 10px; }
+    .task-text { margin: 4px 0 0; color: #333; }
+    .empty { color: #aaa; font-style: italic; }
+
+    /* FIX 4: error and loading state styles */
+    .status {
+      text-align: center;
+      padding: 40px;
+      color: #999;
+      font-size: 16px;
+    }
+    .error {
+      text-align: center;
+      padding: 40px;
+      color: #e74c3c;
+      background: #fdecea;
+      border-radius: 12px;
+      font-size: 15px;
+    }
+    .retry-btn {
+      margin-top: 12px;
+      padding: 8px 20px;
+      background: #764ba2;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+    }
+  </style>
+</head>
 <body>
   <h1>Teacher Dashboard</h1>
   <div id="list"></div>
 
   <script>
     async function loadData() {
-      const res = await fetch("http://localhost:3000/writings");
-      const data = await res.json();
-
       const list = document.getElementById("list");
 
-      data.forEach(item => {
-        const div = document.createElement("div");
-        div.innerHTML = `
-          <h3>${item.student}</h3>
-          <p>${item.content}</p>
-          <hr>
+      // FIX 4: show loading state
+      list.innerHTML = "<p class='status'>Loading submissions...</p>";
+
+      try {
+        const res = await fetch("http://localhost:3000/writings");
+
+        if (!res.ok) {
+          throw new Error(`Server returned ${res.status}`);
+        }
+
+        const data = await res.json();
+        list.innerHTML = "";
+
+        if (data.length === 0) {
+          list.innerHTML = "<p class='empty' style='text-align:center; padding:40px;'>No submissions yet.</p>";
+          return;
+        }
+
+        data.forEach(item => {
+          const c = item.content || {};
+          const card = document.createElement("div");
+          card.className = "card";
+          card.innerHTML = `
+            <h3>👤 ${item.student}</h3>
+            <div class="date">${new Date(item.date).toLocaleString()}</div>
+            ${["task1", "task2", "task3"].map((key, i) => `
+              <p class="task-label">Tâche ${i + 1}</p>
+              <p class="task-text">${c[key] ? c[key] : '<span class="empty">No answer</span>'}</p>
+            `).join("")}
+          `;
+          list.appendChild(card);
+        });
+
+      } catch (err) {
+        // FIX 4: show clear error with retry button if server is offline
+        list.innerHTML = `
+          <div class="error">
+            <p>⚠️ Could not connect to the server.</p>
+            <p style="font-size:13px; color:#999;">Make sure the server is running on <strong>http://localhost:3000</strong></p>
+            <button class="retry-btn" onclick="loadData()">Retry</button>
+          </div>
         `;
-        list.appendChild(div);
-      });
+      }
     }
 
     loadData();

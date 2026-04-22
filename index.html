@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TCF Simulator</title>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -24,7 +25,8 @@
 <div class="container">
 
   <div class="controls">
-    <button id="startBtn" onclick="startTimer()">Start</button>
+    <!-- FIX 2: removed unused id="startBtn", button is called via onclick -->
+    <button onclick="startTimer()">Start</button>
     <button onclick="saveWriting()">Submit</button>
   </div>
 
@@ -71,6 +73,7 @@
 
 </div>
 
+<!-- FIX 1: timer display is now set dynamically by script.js on load -->
 <script src="script.js"></script>
 </body>
 </html>
