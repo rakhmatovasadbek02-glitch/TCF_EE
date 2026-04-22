@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // ========================
   async function loadQuestionSets() {
     try {
-      const res = await fetch("http://localhost:3000/questions");
+      const res = await fetch("/questions");
       const data = await res.json();
       const sets = data.sets || [];
 
@@ -207,7 +207,7 @@ document.addEventListener("DOMContentLoaded", () => {
       document.querySelectorAll("textarea").forEach(a => a.disabled = true);
       document.body.removeChild(modal);
 
-      fetch("http://localhost:3000/save", {
+      fetch("/save", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ student, content })
