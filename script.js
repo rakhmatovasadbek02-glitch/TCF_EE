@@ -186,7 +186,10 @@ window.selectTask = function (num) {
     document.getElementById("task2"),
     document.getElementById("task3")
   ];
-
+  
+const buttons = document.querySelectorAll(".task-buttons button");
+buttons.forEach(b => b.classList.remove("active"));
+buttons[num - 1].classList.add("active");
   // Hide all
   boxes.forEach(box => box.style.display = "none");
 

@@ -43,31 +43,32 @@
       <button onclick="saveWriting()">Submit</button>
     </div>
 
-    <div class="task-buttons">
-  <button onclick="selectTask(1)">Tâche 1</button>
+  <div class="task-buttons">
+  <button onclick="selectTask(1)" class="active">Tâche 1</button>
   <button onclick="selectTask(2)">Tâche 2</button>
   <button onclick="selectTask(3)">Tâche 3</button>
-   </div>
+</div>
 
     <!-- 📝 TASKS -->
+<div class="tasks">
+
+  <!-- Task 1 -->
   <div class="task" id="taskBox1">
-  <h2>Tâche 1</h2>
-  <textarea id="task1" disabled></textarea>
-  <p id="count1">0 words</p>
-</div>
+    <textarea id="task1" placeholder="Start writing..." disabled></textarea>
+    <p id="count1">0 words</p>
+  </div>
 
-<div class="task" id="taskBox2" style="display:none;">
-  <h2>Tâche 2</h2>
-  <textarea id="task2" disabled></textarea>
-  <p id="count2">0 words</p>
-</div>
+  <!-- Task 2 -->
+  <div class="task" id="taskBox2" style="display:none;">
+    <textarea id="task2" placeholder="Start writing..." disabled></textarea>
+    <p id="count2">0 words</p>
+  </div>
 
-<div class="task" id="taskBox3" style="display:none;">
-  <h2>Tâche 3</h2>
-  <textarea id="task3" disabled></textarea>
-  <p id="count3">0 words</p>
-</div>
- </div>
+  <!-- Task 3 -->
+  <div class="task" id="taskBox3" style="display:none;">
+    <textarea id="task3" placeholder="Start writing..." disabled></textarea>
+    <p id="count3">0 words</p>
+  </div>
 
   </div>
 

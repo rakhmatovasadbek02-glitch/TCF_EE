@@ -208,3 +208,7 @@ body.dark textarea {
 .container {
   margin-top: 100px;
 }
+
+.task-buttons button.active {
+  background: #ffd700;
+}
