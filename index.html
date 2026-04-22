@@ -2,78 +2,82 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Writing Timer</title>
+  <title>TCF Simulator</title>
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body class="light">
 
+  <!-- =======================
+       TOP BAR
+  ======================= -->
+  <div class="topbar">
+
+    <div class="logo">
+      TCF Simulator
+    </div>
+
+    <div id="timer" class="timer">
+      60:00
+    </div>
+
+    <div class="top-right">
+
+      <span id="lightMode">☀️</span>
+      <span id="darkMode">🌙</span>
+
+      <button id="fullscreenBtn">⛶</button>
+
+    </div>
+
+  </div>
+
+  <!-- =======================
+       MAIN CONTAINER
+  ======================= -->
   <div class="container">
 
-    <!-- 🏷 Title -->
-    <div class="topbar">
-        <button id="fullscreenBtn">⛶</button>
-
-  <div class="logo">
-
-    TCF Simulator
-
-  </div>
-
-    <!-- ⏱ Timer -->
-      <div class="timer" id="timer">
-
-    60:00
-
-  </div>
-
-  <!-- 🌙 Dark Mode -->
-  <div class="theme-icons">
-
-    <span id="lightMode">☀️</span>
-
-    <span id="darkMode">🌙</span>
-
-  </div>
-
-</div>
-
-    <!-- ▶️ Controls -->
+    <!-- CONTROLS -->
     <div class="controls">
-      <button onclick="startTimer()">Start</button>
+      <button id="startBtn" onclick="startTimer()">Start</button>
       <button onclick="saveWriting()">Submit</button>
     </div>
 
-  <div class="task-buttons">
-  <button onclick="selectTask(1)" class="active">Tâche 1</button>
-  <button onclick="selectTask(2)">Tâche 2</button>
-  <button onclick="selectTask(3)">Tâche 3</button>
-</div>
+    <!-- TASK BUTTONS -->
+    <div class="task-buttons">
+      <button onclick="selectTask(1)" class="active">Tâche 1</button>
+      <button onclick="selectTask(2)">Tâche 2</button>
+      <button onclick="selectTask(3)">Tâche 3</button>
+    </div>
 
-    <!-- 📝 TASKS -->
-<div class="tasks">
+    <!-- TASKS -->
+    <div class="tasks">
 
-  <!-- Task 1 -->
-  <div class="task" id="taskBox1">
-    <textarea id="task1" placeholder="Start writing..." disabled></textarea>
-    <p id="count1">0 words</p>
+      <!-- Task 1 -->
+      <div class="task" id="taskBox1">
+        <textarea id="task1" placeholder="Start writing..." disabled></textarea>
+        <p id="count1">0 words</p>
+      </div>
+
+      <!-- Task 2 -->
+      <div class="task" id="taskBox2" style="display:none;">
+        <textarea id="task2" placeholder="Start writing..." disabled></textarea>
+        <p id="count2">0 words</p>
+      </div>
+
+      <!-- Task 3 -->
+      <div class="task" id="taskBox3" style="display:none;">
+        <textarea id="task3" placeholder="Start writing..." disabled></textarea>
+        <p id="count3">0 words</p>
+      </div>
+
+    </div>
+
   </div>
 
-  <!-- Task 2 -->
-  <div class="task" id="taskBox2" style="display:none;">
-    <textarea id="task2" placeholder="Start writing..." disabled></textarea>
-    <p id="count2">0 words</p>
-  </div>
-
-  <!-- Task 3 -->
-  <div class="task" id="taskBox3" style="display:none;">
-    <textarea id="task3" placeholder="Start writing..." disabled></textarea>
-    <p id="count3">0 words</p>
-  </div>
-
-  </div>
-
-  <!-- ⚙️ JS -->
+  <!-- =======================
+       SCRIPT
+  ======================= -->
   <script src="script.js"></script>
 
 </body>

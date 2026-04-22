@@ -1,26 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-// =======================
-// FULLSCREEN TOGGLE
-// =======================
-const fullscreenBtn = document.getElementById("fullscreenBtn");
-
-if (fullscreenBtn) {
-  fullscreenBtn.addEventListener("click", () => {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen();
-    } else {
-      document.exitFullscreen();
-    }
-  });
-}
-
-document.addEventListener("fullscreenchange", () => {
-  if (document.fullscreenElement) {
-    fullscreenBtn.textContent = "⤫"; // exit icon
-  } else {
-    fullscreenBtn.textContent = "⛶"; // enter icon
-  }
-});
 
   // =======================
   // TIMER SETUP (60 MIN)
@@ -49,15 +27,15 @@ document.addEventListener("fullscreenchange", () => {
     const areas = document.querySelectorAll("textarea");
     const startBtn = document.getElementById("startBtn");
 
-    // Lock all textareas first
+    // Lock all first
     areas.forEach(area => area.disabled = true);
 
-    // Enable only active task
-    const activeTask = document.querySelector(".task.active textarea");
+    // Enable current visible task
+    const visibleBox = document.querySelector(".task:not([style*='display: none']) textarea");
 
-    if (activeTask) {
-      activeTask.disabled = false;
-      activeTask.focus();
+    if (visibleBox) {
+      visibleBox.disabled = false;
+      visibleBox.focus();
     }
 
     if (startBtn) startBtn.disabled = true;
@@ -113,7 +91,7 @@ document.addEventListener("fullscreenchange", () => {
   };
 
   // =======================
-  // WORD COUNTS (PER TASK)
+  // WORD COUNT
   // =======================
   function countWords(text) {
     return text.trim().split(/\s+/).filter(Boolean).length;
@@ -138,92 +116,93 @@ document.addEventListener("fullscreenchange", () => {
       countWords(task3.value) + " words";
   });
 
-// =======================
-// THEME ICON TOGGLE
-// =======================
-const lightBtn = document.getElementById("lightMode");
-const darkBtn = document.getElementById("darkMode");
-
-// load saved theme
-const savedTheme = localStorage.getItem("theme") || "light";
-document.body.classList.add(savedTheme);
-
-if (lightBtn && darkBtn) {
-
-  lightBtn.addEventListener("click", () => {
-    document.body.classList.remove("dark");
-    document.body.classList.add("light");
-    localStorage.setItem("theme", "light");
-  });
-
-  darkBtn.addEventListener("click", () => {
-    document.body.classList.remove("light");
-    document.body.classList.add("dark");
-    localStorage.setItem("theme", "dark");
-  });
-
-}
-
   // =======================
-  // TASK SELECTION (REAL SWITCHING)
+  // THEME TOGGLE (SUN/MOON)
   // =======================
-  const tasks = document.querySelectorAll(".task");
-  const textareas = document.querySelectorAll("textarea");
+  const lightBtn = document.getElementById("lightMode");
+  const darkBtn = document.getElementById("darkMode");
 
-  tasks.forEach(task => {
-    task.addEventListener("click", () => {
+  const savedTheme = localStorage.getItem("theme") || "light";
+  document.body.classList.add(savedTheme);
 
-      // Remove active from all
-      tasks.forEach(t => t.classList.remove("active"));
+  if (lightBtn && darkBtn) {
 
-      // Lock all textareas
-      textareas.forEach(area => {
-        area.disabled = true;
-      });
-
-      // Activate clicked task
-      task.classList.add("active");
-
-      // Enable only its textarea
-      const textarea = task.querySelector("textarea");
-      textarea.disabled = false;
-      textarea.focus();
+    lightBtn.addEventListener("click", () => {
+      document.body.classList.remove("dark");
+      document.body.classList.add("light");
+      localStorage.setItem("theme", "light");
     });
+
+    darkBtn.addEventListener("click", () => {
+      document.body.classList.remove("light");
+      document.body.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    });
+
+  }
+
+  // =======================
+  // TASK SWITCH (TABS)
+  // =======================
+  window.selectTask = function (num) {
+
+    const boxes = [
+      document.getElementById("taskBox1"),
+      document.getElementById("taskBox2"),
+      document.getElementById("taskBox3")
+    ];
+
+    const areas = [
+      document.getElementById("task1"),
+      document.getElementById("task2"),
+      document.getElementById("task3")
+    ];
+
+    const buttons = document.querySelectorAll(".task-buttons button");
+
+    // Hide all
+    boxes.forEach(box => box.style.display = "none");
+
+    // Show selected
+    boxes[num - 1].style.display = "block";
+
+    // Button highlight
+    buttons.forEach(b => b.classList.remove("active"));
+    buttons[num - 1].classList.add("active");
+
+    // Disable all
+    areas.forEach(a => a.disabled = true);
+
+    // Enable if timer started
+    if (isRunning) {
+      areas[num - 1].disabled = false;
+      areas[num - 1].focus();
+    }
+  };
+
+  // =======================
+  // FULLSCREEN
+  // =======================
+  const fullscreenBtn = document.getElementById("fullscreenBtn");
+
+  if (fullscreenBtn) {
+    fullscreenBtn.addEventListener("click", () => {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+      } else {
+        document.exitFullscreen();
+      }
+    });
+  }
+
+  document.addEventListener("fullscreenchange", () => {
+    if (!fullscreenBtn) return;
+
+    if (document.fullscreenElement) {
+      fullscreenBtn.textContent = "⤫";
+    } else {
+      fullscreenBtn.textContent = "⛶";
+    }
   });
 
 });
-
-// =======================
-// TASK SWITCH (TABS)
-// =======================
-window.selectTask = function (num) {
-  const boxes = [
-    document.getElementById("taskBox1"),
-    document.getElementById("taskBox2"),
-    document.getElementById("taskBox3")
-  ];
-
-  const areas = [
-    document.getElementById("task1"),
-    document.getElementById("task2"),
-    document.getElementById("task3")
-  ];
-
-const buttons = document.querySelectorAll(".task-buttons button");
-buttons.forEach(b => b.classList.remove("active"));
-buttons[num - 1].classList.add("active");
-  // Hide all
-  boxes.forEach(box => box.style.display = "none");
-
-  // Show selected
-  boxes[num - 1].style.display = "block";
-
-  // Disable all textareas
-  areas.forEach(a => a.disabled = true);
-
-  // Enable selected ONLY if timer started
-  if (isRunning) {
-    areas[num - 1].disabled = false;
-    areas[num - 1].focus();
-  }
-};
