@@ -1,17 +1,19 @@
 const express = require("express");
-const sqlite3 = require("sqlite3").verbose();
+const Database = require("better-sqlite3");
 const cors = require("cors");
 const path = require("path");
 const fs = require("fs");
 
 const app = express();
+const PORT = process.env.PORT || 3000;
+
 app.use(cors());
 app.use(express.json());
 
-const db = new sqlite3.Database("database.db");
+const db = new Database("database.db");
 const QUESTIONS_FILE = path.join(__dirname, "questions.json");
 
-db.run(`
+db.exec(`
   CREATE TABLE IF NOT EXISTS writings (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     student TEXT,
@@ -21,7 +23,6 @@ db.run(`
 `);
 
 // ── Questions ─────────────────────────────────────────────
-// NOTE: API routes must come BEFORE express.static
 
 app.get("/questions", (req, res) => {
   try {
@@ -48,20 +49,19 @@ app.post("/questions", (req, res) => {
 // ── Writings ──────────────────────────────────────────────
 
 app.post("/save", (req, res) => {
-  const { student, content } = req.body;
-  db.run(
-    "INSERT INTO writings (student, content) VALUES (?, ?)",
-    [student, JSON.stringify(content)],
-    function (err) {
-      if (err) return res.status(500).send(err);
-      res.send({ id: this.lastID });
-    }
-  );
+  try {
+    const { student, content } = req.body;
+    const stmt = db.prepare("INSERT INTO writings (student, content) VALUES (?, ?)");
+    const result = stmt.run(student, JSON.stringify(content));
+    res.send({ id: result.lastInsertRowid });
+  } catch (err) {
+    res.status(500).send({ error: err.message });
+  }
 });
 
 app.get("/writings", (req, res) => {
-  db.all("SELECT * FROM writings ORDER BY date DESC", [], (err, rows) => {
-    if (err) return res.status(500).send(err);
+  try {
+    const rows = db.prepare("SELECT * FROM writings ORDER BY date DESC").all();
     const parsed = rows.map(row => ({
       ...row,
       content: (() => {
@@ -70,16 +70,18 @@ app.get("/writings", (req, res) => {
       })()
     }));
     res.send(parsed);
-  });
+  } catch (err) {
+    res.status(500).send({ error: err.message });
+  }
 });
 
-// ── Static files — AFTER API routes ───────────────────────
+// ── Static files ───────────────────────────────────────────
 app.use(express.static(path.join(__dirname)));
 
 // ── Start ──────────────────────────────────────────────────
-app.listen(3000, () => {
-  console.log("Server running on http://localhost:3000");
-  console.log("Student exam:       http://localhost:3000/index.html");
-  console.log("Teacher dashboard:  http://localhost:3000/dashboard.html");
-  console.log("Admin panel:        http://localhost:3000/admin.html");
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+  console.log(`Student exam:      http://localhost:${PORT}/index.html`);
+  console.log(`Teacher dashboard: http://localhost:${PORT}/dashboard.html`);
+  console.log(`Admin panel:       http://localhost:${PORT}/admin.html`);
 });
