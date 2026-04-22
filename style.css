@@ -14,8 +14,8 @@
   --line:       rgba(255,255,255,0.12);
   --line-hi:    rgba(255,255,255,0.25);
   --text:       #ffffff;
-  --text-dim:   rgba(255,255,255,0.55);
-  --text-muted: rgba(255,255,255,0.25);
+  --text-dim:   #ffffff;
+  --text-muted: rgba(255,255,255,0.75);
   --accent:     #9FADCB;
   --green:      #a8d5b5;
   --red:        #f4a0a0;
@@ -25,6 +25,14 @@
   --top-h:      56px;
   --sel-h:      44px;
   --act-h:      42px;
+
+  /* Fluid font scale — grows from mobile to desktop */
+  --fs-xs:   clamp(11px, 1.1vw, 13px);
+  --fs-sm:   clamp(13px, 1.4vw, 15px);
+  --fs-base: clamp(15px, 1.6vw, 17px);
+  --fs-md:   clamp(16px, 1.8vw, 19px);
+  --fs-lg:   clamp(20px, 2.2vw, 26px);
+  --fs-xl:   clamp(22px, 2.8vw, 30px);
 }
 
 html, body {
@@ -68,7 +76,7 @@ html, body {
 }
 
 .brand {
-  font-size: 13px;
+  font-size: var(--fs-sm);
   font-weight: 600;
   letter-spacing: 0.2em;
   color: var(--text);
@@ -83,16 +91,16 @@ html, body {
 }
 
 .brand-sub {
-  font-size: 12px;
+  font-size: var(--fs-sm);
   font-weight: 300;
-  color: var(--text-dim);
+  color: #ffffff;
 }
 
 .topbar-center { text-align: center; }
 
 .timer {
   display: block;
-  font-size: 22px;
+  font-size: var(--fs-xl);
   font-weight: 600;
   letter-spacing: 0.08em;
   color: var(--text);
@@ -101,7 +109,7 @@ html, body {
 }
 
 .timer-label {
-  font-size: 9px;
+  font-size: var(--fs-xs);
   font-weight: 400;
   letter-spacing: 0.2em;
   color: var(--text-muted);
@@ -124,7 +132,7 @@ html, body {
 ================================ */
 .btn-start, .btn-submit {
   font-family: var(--font);
-  font-size: 12px;
+  font-size: var(--fs-sm);
   font-weight: 500;
   padding: 8px 18px;
   border-radius: 6px;
@@ -167,7 +175,7 @@ html, body {
 }
 
 .selector-label {
-  font-size: 9px;
+  font-size: var(--fs-xs);
   font-weight: 600;
   letter-spacing: 0.22em;
   color: var(--text-muted);
@@ -183,7 +191,7 @@ html, body {
   border-radius: 6px;
   padding: 6px 12px;
   font-family: var(--font);
-  font-size: 13px;
+  font-size: var(--fs-base);
   font-weight: 400;
   outline: none;
   cursor: pointer;
@@ -197,7 +205,7 @@ html, body {
 .set-select:focus { border-color: var(--accent); }
 
 .set-status {
-  font-size: 11px;
+  font-size: var(--fs-sm);
   font-weight: 500;
   color: var(--green);
   letter-spacing: 0.03em;
@@ -226,9 +234,9 @@ html, body {
 .task-btn {
   background: rgba(255,255,255,0.15);
   border: 1px solid rgba(255,255,255,0.2);
-  color: rgba(255,255,255,0.75);
+  color: #ffffff;
   font-family: var(--font);
-  font-size: 12px;
+  font-size: var(--fs-sm);
   font-weight: 400;
   letter-spacing: 0.05em;
   padding: 6px 16px;
@@ -273,7 +281,7 @@ html, body {
 }
 
 .consigne-label {
-  font-size: 9px;
+  font-size: var(--fs-xs);
   font-weight: 600;
   letter-spacing: 0.25em;
   color: var(--text-muted);
@@ -281,7 +289,7 @@ html, body {
 }
 
 .consigne-text {
-  font-size: 14px;
+  font-size: var(--fs-md);
   font-weight: 300;
   line-height: 1.8;
   color: var(--text);
@@ -294,7 +302,7 @@ html, body {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background: #42587D;
+  background: #ffffff;
 }
 
 .task-area {
@@ -314,7 +322,7 @@ textarea {
   border-radius: 8px;
   padding: 20px 24px;
   font-family: var(--font);
-  font-size: 15px;
+  font-size: var(--fs-md);
   font-weight: 300;
   line-height: 1.85;
   resize: none;
@@ -345,9 +353,9 @@ textarea:disabled {
 }
 
 .wc {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 400;
-  color: #8a99b0;
+  color: rgba(255,255,255,0.6);
   letter-spacing: 0.06em;
 }
 
