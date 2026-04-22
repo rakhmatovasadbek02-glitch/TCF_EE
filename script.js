@@ -116,35 +116,31 @@ document.addEventListener("DOMContentLoaded", () => {
       countWords(task3.value) + " words";
   });
 
-  // =======================
-  // DARK MODE
-  // =======================
-  const toggleBtn = document.getElementById("themeToggle");
+// =======================
+// THEME ICON TOGGLE
+// =======================
+const lightBtn = document.getElementById("lightMode");
+const darkBtn = document.getElementById("darkMode");
 
-  const savedTheme = localStorage.getItem("theme") || "light";
-  document.body.classList.add(savedTheme);
-  updateButtonText(savedTheme);
+// load saved theme
+const savedTheme = localStorage.getItem("theme") || "light";
+document.body.classList.add(savedTheme);
 
-  if (toggleBtn) {
-    toggleBtn.addEventListener("click", () => {
-      const isDark = document.body.classList.contains("dark");
+if (lightBtn && darkBtn) {
 
-      document.body.classList.toggle("dark");
-      document.body.classList.toggle("light");
+  lightBtn.addEventListener("click", () => {
+    document.body.classList.remove("dark");
+    document.body.classList.add("light");
+    localStorage.setItem("theme", "light");
+  });
 
-      const newTheme = isDark ? "light" : "dark";
-      localStorage.setItem("theme", newTheme);
+  darkBtn.addEventListener("click", () => {
+    document.body.classList.remove("light");
+    document.body.classList.add("dark");
+    localStorage.setItem("theme", "dark");
+  });
 
-      updateButtonText(newTheme);
-    });
-  }
-
-  function updateButtonText(theme) {
-    if (!toggleBtn) return;
-
-    toggleBtn.textContent =
-      theme === "dark" ? "☀️ Light Mode" : "🌙 Dark Mode";
-  }
+}
 
   // =======================
   // TASK SELECTION (REAL SWITCHING)

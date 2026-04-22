@@ -158,3 +158,53 @@ body.dark textarea {
   font-size: 14px;
   opacity: 0.9;
 }
+
+/* =======================
+   TOP BAR
+======================= */
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+/* LOGO */
+.logo {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+/* TIMER CENTER */
+.timer {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 28px;
+  font-weight: bold;
+}
+
+/* THEME ICONS */
+.theme-icons span {
+  font-size: 22px;
+  margin-left: 10px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.theme-icons span:hover {
+  transform: scale(1.2);
+}
+
+/* PUSH CONTENT DOWN */
+.container {
+  margin-top: 100px;
+}
