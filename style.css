@@ -90,7 +90,8 @@ body.dark #fullscreenBtn {
    CONTAINER
 ======================= */
 .container {
-  max-width: 900px;
+  width: 95%;
+  max-width: 1400px;
   margin: 100px auto 40px;
   padding: 20px;
   text-align: center;
@@ -207,9 +208,9 @@ body.dark textarea {
 ======================= */
 .exam-layout {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1.5fr; /* ← wider right side */
   gap: 20px;
-  height: 500px;
+  height: 600px;
 }
 
 /* LEFT SIDE (QUESTION) */
