@@ -90,11 +90,10 @@ body.dark #fullscreenBtn {
    CONTAINER (WIDER)
 ======================= */
 .container {
-  width: 95%;
-  max-width: 1400px;
-  margin: 100px auto 40px;
+  height: calc(100vh - 60px); /* full screen minus topbar */
+  margin: 60px auto 0;
   padding: 20px;
-  text-align: center;
+  box-sizing: border-box;
 }
 
 /* =======================
@@ -165,10 +164,9 @@ body.dark .task-buttons button.active {
   grid-template-columns: 1fr 1.5fr;
   gap: 20px;
 
-  height: calc(100vh - 140px);
-  overflow: hidden; /* 🔥 prevents page scroll */
+  height: 100%;
+  overflow: hidden; /* 🔥 stops layout overflow */
 }
-
 /* =======================
    LEFT: QUESTION BOX
 ======================= */
@@ -230,3 +228,28 @@ body.dark textarea {
   font-size: 14px;
   opacity: 0.8;
 }
+
+/* 🔒 LOCK PAGE SCROLL */
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
+/* LEFT: QUESTION */
+.question-box {
+  height: 100%;
+  overflow-y: auto;
+}
+
+/* RIGHT: WRITING */
+.writing-box {
+  height: 100%;
+  overflow: hidden;
+}
+
+/* TEXTAREA scrolls instead */
+textarea {
+  height: 100%;
+  overflow-y: auto;
+}
+
