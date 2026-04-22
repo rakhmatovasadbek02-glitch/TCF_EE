@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!chosen) return;
         questions = [chosen.tasks.task1, chosen.tasks.task2, chosen.tasks.task3];
         document.getElementById("questionText").textContent = questions[0];
-        document.getElementById("setStatus").textContent = "✔ " + chosen.name;
+        document.getElementById("setStatus").textContent = "✓ " + chosen.name;
       });
 
     } catch (err) {
@@ -39,60 +39,47 @@ document.addEventListener("DOMContentLoaded", () => {
   loadQuestionSets();
 
   // ========================
-  // TIMER DISPLAY
+  // TIMER
   // ========================
   function updateDisplay() {
-    let m = Math.floor(timeLeft / 60);
-    let s = timeLeft % 60;
+    const m = Math.floor(timeLeft / 60);
+    const s = timeLeft % 60;
     const el = document.getElementById("timer");
     el.textContent = `${m}:${s < 10 ? "0" : ""}${s}`;
-    // Warning color under 5 minutes
     if (timeLeft <= 300) el.classList.add("warning");
     else el.classList.remove("warning");
   }
 
   updateDisplay();
 
-  // ========================
-  // START TIMER
-  // ========================
   window.startTimer = function () {
     if (isRunning) return;
 
     const select = document.getElementById("setSelect");
     if (!select.value) {
-      select.style.outline = "2px solid #C9A84C";
-      setTimeout(() => select.style.outline = "", 800);
+      select.style.borderColor = "#f0f0f0";
+      setTimeout(() => select.style.borderColor = "", 800);
       return;
     }
 
     isRunning = true;
-
-    const areas = document.querySelectorAll("textarea");
-    areas.forEach(a => a.disabled = true);
+    document.querySelectorAll("textarea").forEach(a => a.disabled = true);
 
     const visible = document.querySelector(".task-area:not([style*='none']) textarea");
-    if (visible) {
-      visible.disabled = false;
-      visible.focus();
-    }
+    if (visible) { visible.disabled = false; visible.focus(); }
 
     timer = setInterval(() => {
       timeLeft--;
       updateDisplay();
-
       if (timeLeft <= 0) {
         clearInterval(timer);
         isRunning = false;
-        areas.forEach(a => a.disabled = true);
+        document.querySelectorAll("textarea").forEach(a => a.disabled = true);
         alert("Le temps est écoulé !");
       }
     }, 1000);
   };
 
-  // ========================
-  // STOP TIMER
-  // ========================
   function stopTimer() {
     clearInterval(timer);
     isRunning = false;
@@ -103,25 +90,17 @@ document.addEventListener("DOMContentLoaded", () => {
   // ========================
   window.selectTask = function (num) {
     if (!isRunning) {
-      const startBtn = document.querySelector(".btn--start");
-      if (startBtn) {
-        startBtn.style.transform = "scale(1.1)";
-        setTimeout(() => startBtn.style.transform = "scale(1)", 200);
+      const btn = document.querySelector(".btn-start");
+      if (btn) {
+        btn.style.transform = "scale(1.08)";
+        setTimeout(() => btn.style.transform = "", 180);
       }
       return;
     }
 
-    const boxes = [
-      document.getElementById("taskBox1"),
-      document.getElementById("taskBox2"),
-      document.getElementById("taskBox3")
-    ];
-    const areas = [
-      document.getElementById("task1"),
-      document.getElementById("task2"),
-      document.getElementById("task3")
-    ];
-    const tabs = document.querySelectorAll(".task-tab");
+    const boxes = ["taskBox1","taskBox2","taskBox3"].map(id => document.getElementById(id));
+    const areas = ["task1","task2","task3"].map(id => document.getElementById(id));
+    const tabs  = document.querySelectorAll(".task-btn");
 
     boxes.forEach(b => b.style.display = "none");
     boxes[num - 1].style.display = "flex";
@@ -142,11 +121,11 @@ document.addEventListener("DOMContentLoaded", () => {
   function countWords(t) {
     const trimmed = t.trim();
     if (!trimmed) return "0 mot";
-    const count = trimmed.split(/\s+/).length;
-    return count === 1 ? "1 mot" : `${count} mots`;
+    const n = trimmed.split(/\s+/).length;
+    return n === 1 ? "1 mot" : `${n} mots`;
   }
 
-  ["1", "2", "3"].forEach(n => {
+  ["1","2","3"].forEach(n => {
     const t = document.getElementById("task" + n);
     t.addEventListener("input", () => {
       document.getElementById("count" + n).textContent = countWords(t.value);
@@ -154,53 +133,47 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // ========================
-  // SAVE WRITING
+  // SUBMIT
   // ========================
   window.saveWriting = function () {
     if (!isRunning && timeLeft === 3600) {
-      const startBtn = document.querySelector(".btn--start");
-      if (startBtn) {
-        startBtn.style.transform = "scale(1.1)";
-        setTimeout(() => startBtn.style.transform = "scale(1)", 200);
-      }
+      const btn = document.querySelector(".btn-start");
+      if (btn) { btn.style.transform = "scale(1.08)"; setTimeout(() => btn.style.transform = "", 180); }
       return;
     }
 
-    const existing = document.getElementById("nameModal");
-    if (existing) return;
+    if (document.getElementById("nameModal")) return;
 
     const modal = document.createElement("div");
     modal.id = "nameModal";
     modal.style.cssText = `
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,35,149,0.55); display: flex;
-      align-items: center; justify-content: center; z-index: 999;
-      backdrop-filter: blur(3px);
+      position:fixed;inset:0;background:rgba(0,0,0,0.75);
+      display:flex;align-items:center;justify-content:center;z-index:999;
+      backdrop-filter:blur(4px);
     `;
 
     modal.innerHTML = `
       <div style="
-        background: white; color: #1a1a2e; padding: 36px 32px;
-        border-radius: 8px; display: flex; flex-direction: column;
-        gap: 14px; min-width: 320px;
-        box-shadow: 0 20px 60px rgba(0,0,0,0.25);
-        border-top: 4px solid #002395;
+        background:#141414;border:1px solid #2a2a2a;
+        border-radius:8px;padding:32px 28px;
+        display:flex;flex-direction:column;gap:16px;
+        min-width:300px;max-width:90vw;
       ">
-        <div style="font-family:'Playfair Display',serif; font-size:18px; font-weight:700; color:#002395;">
-          Identification du candidat
-        </div>
-        <div style="font-size:13px; color:#666; margin-top:-6px;">Entrez votre nom complet avant de soumettre.</div>
+        <div style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.2em;color:#555;">IDENTIFICATION</div>
+        <div style="font-size:16px;font-weight:400;color:#e8e8e8;">Entrez votre nom complet</div>
         <input id="studentNameInput" type="text" placeholder="Nom et prénom"
-          style="padding: 10px 14px; border-radius: 4px; border: 1px solid #ccc;
-                 font-size: 14px; font-family:'Source Sans 3',sans-serif; outline:none;" />
-        <div style="display:flex; gap:10px; justify-content: flex-end; margin-top:4px;">
-          <button id="cancelSubmit" style="padding: 8px 18px; border-radius:4px; border:1px solid #ddd;
-            cursor:pointer; background:white; font-family:'Source Sans 3',sans-serif; font-size:13px;">
+          style="background:#1a1a1a;border:1px solid #2a2a2a;border-radius:4px;
+                 padding:10px 14px;color:#e8e8e8;font-size:14px;
+                 font-family:'DM Sans',sans-serif;outline:none;width:100%;" />
+        <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:4px;">
+          <button id="cancelSubmit" style="padding:8px 18px;border-radius:4px;
+            border:1px solid #2a2a2a;background:transparent;color:#666;
+            font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;">
             Annuler
           </button>
-          <button id="confirmSubmit" style="padding: 8px 20px; border-radius:4px; border:none;
-            cursor:pointer; background:#C1272D; color:white; font-weight:600;
-            font-family:'Source Sans 3',sans-serif; font-size:13px;">
+          <button id="confirmSubmit" style="padding:8px 20px;border-radius:4px;
+            border:none;background:#f0f0f0;color:#0d0d0d;font-weight:600;
+            font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;">
             Soumettre
           </button>
         </div>
@@ -213,7 +186,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function submitModal() {
       const student = input.value.trim();
-      if (!student) { input.style.borderColor = "#C1272D"; return; }
+      if (!student) { input.style.borderColor = "#f87171"; return; }
 
       const content = {
         task1: document.getElementById("task1").value,
@@ -230,7 +203,7 @@ document.addEventListener("DOMContentLoaded", () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ student, content })
       })
-        .then(res => res.json())
+        .then(r => r.json())
         .then(() => alert("Copie soumise avec succès !"))
         .catch(() => alert("Erreur de soumission. Le serveur est-il en marche ?"));
     }
