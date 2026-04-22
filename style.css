@@ -60,13 +60,17 @@ body.dark {
 }
 
 /* =======================
-   MAIN CONTAINER
+   MAIN CONTAINER (CENTERED)
 ======================= */
 .container {
   height: calc(100vh - 60px);
+
   display: flex;
   flex-direction: column;
-  padding: 15px;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
   box-sizing: border-box;
 }
 
@@ -79,6 +83,10 @@ body.dark {
   border-radius: 8px;
   border: none;
   cursor: pointer;
+}
+
+.task-buttons {
+  margin-top: 10px;
 }
 
 .task-buttons button {
@@ -94,13 +102,18 @@ body.dark {
 }
 
 /* =======================
-   EXAM LAYOUT
+   EXAM LAYOUT (SHORTER)
 ======================= */
 .exam-layout {
-  flex: 1;
+  width: 100%;
+  max-width: 1200px;
+
+  height: 500px;
+
   display: grid;
   grid-template-columns: 1fr 1.5fr;
-  gap: 15px;
+  gap: 20px;
+
   overflow: hidden;
 }
 
@@ -113,7 +126,9 @@ body.dark {
   backdrop-filter: blur(12px);
 
   border-radius: 16px;
-  padding: 18px;
+  padding: 20px;
+
+  border: 1px solid rgba(255,255,255,0.15);
 
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
   transition: 0.25s ease;
@@ -139,6 +154,7 @@ body.dark .task {
   height: 100%;
   overflow-y: auto;
   text-align: left;
+
   font-size: 15px;
   line-height: 1.6;
 }
@@ -149,10 +165,8 @@ body.dark .task {
 .writing-box {
   height: 100%;
   display: flex;
-  overflow: hidden;
 }
 
-/* TASK WRAPPER */
 .task {
   flex: 1;
   position: relative;
@@ -164,13 +178,14 @@ body.dark .task {
 textarea {
   width: 100%;
   height: 100%;
-  padding: 18px;
+
+  padding: 20px;
 
   border-radius: 14px;
   border: none;
 
   font-size: 16px;
-  line-height: 1.6;
+  line-height: 1.7;
 
   resize: none;
   outline: none;
@@ -199,10 +214,9 @@ textarea:focus {
 ======================= */
 .word-count {
   position: absolute;
-  bottom: 12px;
+  bottom: 14px;
   right: 18px;
 
   font-size: 13px;
-  opacity: 0.7;
-  font-weight: 500;
+  opacity: 0.6;
 }
