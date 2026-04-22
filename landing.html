@@ -3,234 +3,102 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TCF — Simulateur d'Expression Écrite</title>
+  <title>TCF — Simulateur</title>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --c1: #42587D; --c2: #4D6691; --c3: #5673A7; --c4: #708CC5; --c5: #9FADCB;
-      --line: rgba(255,255,255,0.12); --line-hi: rgba(255,255,255,0.25);
-      --text: #ffffff; --text-muted: rgba(255,255,255,0.65);
-      --green: #a8d5b5; --red: #f4a0a0;
-      --font-display: 'DM Serif Display', serif;
-      --font: 'DM Sans', sans-serif;
+      --c1:#42587D;--c2:#4D6691;--c3:#5673A7;--c4:#708CC5;--c5:#9FADCB;
+      --line:rgba(255,255,255,0.12);--line-hi:rgba(255,255,255,0.25);
+      --text:#ffffff;--text-muted:rgba(255,255,255,0.65);
+      --green:#a8d5b5;--red:#f4a0a0;
+      --font-display:'DM Serif Display',serif;--font:'DM Sans',sans-serif;
     }
+    html{scroll-behavior:smooth;}
+    body{font-family:var(--font);background:var(--c1);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
 
-    html { scroll-behavior: smooth; }
-    body {
-      font-family: var(--font);
-      background: var(--c1);
-      color: var(--text);
-      min-height: 100vh;
-      -webkit-font-smoothing: antialiased;
-      overflow-x: hidden;
-    }
+    /* NAV */
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 40px;background:rgba(66,88,125,0.88);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line);}
+    .nav-brand{display:flex;align-items:center;gap:12px;text-decoration:none;}
+    .nav-logo{font-size:14px;font-weight:600;letter-spacing:0.2em;color:var(--text);text-transform:uppercase;}
+    .nav-sep{width:1px;height:16px;background:var(--line-hi);}
+    .nav-subtitle{font-size:12px;font-weight:300;color:var(--text-muted);}
+    .nav-right{display:flex;align-items:center;gap:8px;}
+    .nav-link{font-size:12px;font-weight:400;color:var(--text-muted);text-decoration:none;padding:6px 14px;border-radius:5px;border:1px solid transparent;transition:all 0.15s;white-space:nowrap;}
+    .nav-link:hover{color:var(--text);border-color:var(--line-hi);background:rgba(255,255,255,0.08);}
 
-    /* ── NAV ── */
-    nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      height: 60px; display: flex; align-items: center;
-      justify-content: space-between; padding: 0 40px;
-      background: rgba(66,88,125,0.88);
-      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--line);
-    }
-    .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
-    .nav-logo { font-size: 14px; font-weight: 600; letter-spacing: 0.2em; color: var(--text); text-transform: uppercase; }
-    .nav-sep { width: 1px; height: 16px; background: var(--line-hi); }
-    .nav-subtitle { font-size: 12px; font-weight: 300; color: var(--text-muted); }
-    .nav-right { display: flex; align-items: center; gap: 8px; }
-    .nav-link {
-      font-size: 12px; font-weight: 400; color: var(--text-muted);
-      text-decoration: none; padding: 6px 14px; border-radius: 5px;
-      border: 1px solid transparent; transition: all 0.15s; white-space: nowrap;
-    }
-    .nav-link:hover { color: var(--text); border-color: var(--line-hi); background: rgba(255,255,255,0.08); }
-
-    /* ── ACCESS CODE MODAL ── */
-    .gate {
-      position: fixed; inset: 0; z-index: 200;
-      background: var(--c1);
-      display: flex; align-items: center; justify-content: center;
-      padding: 24px;
-    }
-    .gate-box {
-      background: var(--c2);
-      border: 1px solid var(--line-hi);
-      border-radius: 14px;
-      padding: 40px 36px;
-      max-width: 380px;
-      width: 100%;
-      text-align: center;
-    }
-    .gate-title {
-      font-family: var(--font-display);
-      font-size: 26px;
-      font-weight: 400;
-      margin-bottom: 8px;
-    }
-    .gate-sub {
-      font-size: 13px;
-      font-weight: 300;
-      color: var(--text-muted);
-      margin-bottom: 28px;
-      line-height: 1.6;
-    }
-    .gate-input {
-      width: 100%;
-      background: #ffffff;
-      color: #1a2a3a;
-      border: 2px solid #dde3ec;
-      border-radius: 8px;
-      padding: 12px 16px;
-      font-family: var(--font);
-      font-size: 18px;
-      font-weight: 500;
-      text-align: center;
-      letter-spacing: 0.15em;
-      outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
-      margin-bottom: 12px;
-    }
-    .gate-input:focus { border-color: var(--c4); box-shadow: 0 0 0 3px rgba(112,140,197,0.2); }
-    .gate-input.error { border-color: var(--red); box-shadow: 0 0 0 3px rgba(244,160,160,0.2); }
-    .gate-error {
-      font-size: 12px;
-      color: var(--red);
-      margin-bottom: 12px;
-      min-height: 18px;
-    }
-    .gate-btn {
-      width: 100%;
-      background: #ffffff;
-      color: var(--c1);
-      border: none;
-      border-radius: 8px;
-      padding: 12px;
-      font-family: var(--font);
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: opacity 0.15s;
-    }
-    .gate-btn:hover { opacity: 0.88; }
-    .gate-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-    /* ── HERO ── */
-    .hero {
-      min-height: 100vh; display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      text-align: center; padding: 100px 24px 80px;
-      position: relative; overflow: hidden;
-    }
-    .hero::before {
-      content: ''; position: absolute; inset: 0;
-      background-image: linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
-      background-size: 60px 60px;
-      mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black, transparent);
-      pointer-events: none;
-    }
-    .hero::after {
-      content: ''; position: absolute;
-      width: 600px; height: 600px; border-radius: 50%;
-      background: radial-gradient(circle, rgba(112,140,197,0.18) 0%, transparent 70%);
-      top: 50%; left: 50%; transform: translate(-50%, -50%);
-      pointer-events: none;
-    }
-    .hero-inner { position: relative; z-index: 1; max-width: 720px; }
-    .hero-badge {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: rgba(255,255,255,0.08); border: 1px solid var(--line-hi);
-      border-radius: 100px; padding: 6px 16px;
-      font-size: 11px; font-weight: 500; letter-spacing: 0.12em;
-      text-transform: uppercase; color: var(--c5); margin-bottom: 32px;
-      opacity: 0; animation: fadeUp 0.6s ease forwards;
-    }
-    .hero-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--c5); }
-    .hero-title {
-      font-family: var(--font-display);
-      font-size: clamp(42px, 7vw, 80px); font-weight: 400;
-      line-height: 1.05; color: var(--text); margin-bottom: 12px;
-      opacity: 0; animation: fadeUp 0.6s ease 0.1s forwards;
-    }
-    .hero-title em { font-style: italic; color: var(--c5); }
-    .hero-sub {
-      font-size: clamp(15px, 2vw, 18px); font-weight: 300;
-      color: var(--text-muted); line-height: 1.7; margin-bottom: 48px;
-      max-width: 520px; margin-left: auto; margin-right: auto;
-      opacity: 0; animation: fadeUp 0.6s ease 0.2s forwards;
-    }
-    .hero-cta {
-      display: inline-flex; align-items: center; gap: 10px;
-      background: #ffffff; color: var(--c1);
-      font-family: var(--font); font-size: 15px; font-weight: 600;
-      padding: 14px 32px; border-radius: 8px; text-decoration: none;
-      transition: opacity 0.15s, transform 0.15s;
-      opacity: 0; animation: fadeUp 0.6s ease 0.3s forwards;
-    }
-    .hero-cta:hover { opacity: 0.88; transform: translateY(-1px); }
-    .hero-cta:active { transform: scale(0.98); }
-    .hero-cta-arrow { font-size: 18px; transition: transform 0.15s; }
-    .hero-cta:hover .hero-cta-arrow { transform: translateX(3px); }
-
-    /* ── FEATURES ── */
-    .features { padding: 100px 24px; max-width: 1000px; margin: 0 auto; }
-    .section-label { font-size: 10px; font-weight: 600; letter-spacing: 0.25em; color: var(--text-muted); text-transform: uppercase; text-align: center; margin-bottom: 16px; }
-    .section-title { font-family: var(--font-display); font-size: clamp(28px, 4vw, 42px); font-weight: 400; text-align: center; margin-bottom: 60px; line-height: 1.2; }
-    .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-    .feature-card { background: var(--c2); border: 1px solid var(--line); border-radius: 12px; padding: 28px 24px; transition: border-color 0.2s, transform 0.2s; }
-    .feature-card:hover { border-color: var(--line-hi); transform: translateY(-2px); }
-    .feature-icon { font-size: 24px; margin-bottom: 16px; display: block; }
-    .feature-title { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
-    .feature-desc { font-size: 13px; font-weight: 300; color: var(--text-muted); line-height: 1.7; }
-
-    /* ── TASKS ── */
-    .tasks { padding: 80px 24px; background: var(--c2); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-    .tasks-inner { max-width: 860px; margin: 0 auto; }
-    .tasks-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 48px; }
-    .task-card { border: 1px solid var(--line); border-radius: 10px; padding: 24px; background: rgba(255,255,255,0.05); }
-    .task-num { font-family: var(--font-display); font-size: 36px; font-weight: 400; color: var(--c5); line-height: 1; margin-bottom: 12px; }
-    .task-name { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
-    .task-desc { font-size: 13px; font-weight: 300; color: var(--text-muted); line-height: 1.65; }
-
-    /* ── BOTTOM CTA ── */
-    .bottom-cta { padding: 120px 24px; text-align: center; }
-    .bottom-cta-title { font-family: var(--font-display); font-size: clamp(32px, 5vw, 56px); font-weight: 400; margin-bottom: 16px; line-height: 1.1; }
-    .bottom-cta-sub { font-size: 15px; font-weight: 300; color: var(--text-muted); margin-bottom: 40px; }
-
-    /* ── FOOTER ── */
-    footer { border-top: 1px solid var(--line); padding: 24px 40px; display: flex; align-items: center; justify-content: space-between; }
-    .footer-brand { font-size: 12px; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); }
-    .footer-links { display: flex; gap: 20px; }
-    .footer-links a { font-size: 12px; color: var(--text-muted); text-decoration: none; transition: color 0.15s; }
-    .footer-links a:hover { color: var(--text); }
-
+    /* LANG TOGGLE */
     .lang-btn{background:rgba(255,255,255,0.12);color:rgba(255,255,255,0.7);border:1px solid rgba(255,255,255,0.2);border-radius:4px;padding:4px 8px;font-family:var(--font);font-size:11px;font-weight:500;cursor:pointer;transition:all 0.15s;letter-spacing:0.05em;}
     .lang-btn:hover{background:rgba(255,255,255,0.22);color:#fff;}
     .lang-btn.active{background:#ffffff;color:var(--c1);font-weight:600;border-color:#fff;}
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
 
-    @media (max-width: 768px) {
-      nav { padding: 0 20px; }
-      .nav-subtitle, .nav-sep { display: none; }
-      .features-grid, .tasks-grid { grid-template-columns: 1fr; }
-      footer { flex-direction: column; gap: 16px; text-align: center; }
-      .footer-links { justify-content: center; }
-      .gate-box { padding: 32px 24px; }
-    }
+    /* GATE */
+    .gate{position:fixed;inset:0;z-index:200;background:var(--c1);display:flex;align-items:center;justify-content:center;padding:24px;}
+    .gate-box{background:var(--c2);border:1px solid var(--line-hi);border-radius:14px;padding:40px 36px;max-width:380px;width:100%;text-align:center;}
+    .gate-title{font-family:var(--font-display);font-size:26px;font-weight:400;margin-bottom:8px;}
+    .gate-sub{font-size:13px;font-weight:300;color:var(--text-muted);margin-bottom:28px;line-height:1.6;}
+    .gate-input{width:100%;background:#fff;color:#1a2a3a;border:2px solid #dde3ec;border-radius:8px;padding:12px 16px;font-family:var(--font);font-size:18px;font-weight:500;text-align:center;letter-spacing:0.15em;outline:none;transition:border-color 0.2s,box-shadow 0.2s;margin-bottom:12px;}
+    .gate-input:focus{border-color:var(--c4);box-shadow:0 0 0 3px rgba(112,140,197,0.2);}
+    .gate-input.error{border-color:var(--red);box-shadow:0 0 0 3px rgba(244,160,160,0.2);}
+    .gate-error{font-size:12px;color:var(--red);margin-bottom:12px;min-height:18px;}
+    .gate-btn{width:100%;background:#fff;color:var(--c1);border:none;border-radius:8px;padding:12px;font-family:var(--font);font-size:14px;font-weight:600;cursor:pointer;transition:opacity 0.15s;}
+    .gate-btn:hover{opacity:0.88;}
+    .gate-btn:disabled{opacity:0.5;cursor:not-allowed;}
+
+    /* HERO */
+    .hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:100px 24px 80px;position:relative;overflow:hidden;}
+    .hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.04) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 80% 60% at 50% 50%,black,transparent);pointer-events:none;}
+    .hero::after{content:'';position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(112,140,197,0.18) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;}
+    .hero-inner{position:relative;z-index:1;max-width:720px;}
+    .hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.08);border:1px solid var(--line-hi);border-radius:100px;padding:6px 16px;font-size:11px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:var(--c5);margin-bottom:32px;opacity:0;animation:fadeUp 0.6s ease forwards;}
+    .hero-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--c5);}
+    .hero-title{font-family:var(--font-display);font-size:clamp(42px,7vw,80px);font-weight:400;line-height:1.05;color:var(--text);margin-bottom:12px;opacity:0;animation:fadeUp 0.6s ease 0.1s forwards;}
+    .hero-title em{font-style:italic;color:var(--c5);}
+    .hero-sub{font-size:clamp(15px,2vw,18px);font-weight:300;color:var(--text-muted);line-height:1.7;margin-bottom:48px;max-width:520px;margin-left:auto;margin-right:auto;opacity:0;animation:fadeUp 0.6s ease 0.2s forwards;}
+    .hero-cta{display:inline-flex;align-items:center;gap:10px;background:#fff;color:var(--c1);font-family:var(--font);font-size:15px;font-weight:600;padding:14px 32px;border-radius:8px;text-decoration:none;transition:opacity 0.15s,transform 0.15s;opacity:0;animation:fadeUp 0.6s ease 0.3s forwards;}
+    .hero-cta:hover{opacity:0.88;transform:translateY(-1px);}
+    .hero-cta-arrow{font-size:18px;transition:transform 0.15s;}
+    .hero-cta:hover .hero-cta-arrow{transform:translateX(3px);}
+
+    /* SECTIONS */
+    .features{padding:100px 24px;max-width:1000px;margin:0 auto;}
+    .section-label{font-size:10px;font-weight:600;letter-spacing:0.25em;color:var(--text-muted);text-transform:uppercase;text-align:center;margin-bottom:16px;}
+    .section-title{font-family:var(--font-display);font-size:clamp(28px,4vw,42px);font-weight:400;text-align:center;margin-bottom:60px;line-height:1.2;}
+    .features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+    .feature-card{background:var(--c2);border:1px solid var(--line);border-radius:12px;padding:28px 24px;transition:border-color 0.2s,transform 0.2s;}
+    .feature-card:hover{border-color:var(--line-hi);transform:translateY(-2px);}
+    .feature-icon{font-size:24px;margin-bottom:16px;display:block;}
+    .feature-title{font-size:15px;font-weight:600;margin-bottom:8px;}
+    .feature-desc{font-size:13px;font-weight:300;color:var(--text-muted);line-height:1.7;}
+    .tasks{padding:80px 24px;background:var(--c2);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+    .tasks-inner{max-width:860px;margin:0 auto;}
+    .tasks-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:48px;}
+    .task-card{border:1px solid var(--line);border-radius:10px;padding:24px;background:rgba(255,255,255,0.05);}
+    .task-num{font-family:var(--font-display);font-size:36px;font-weight:400;color:var(--c5);line-height:1;margin-bottom:12px;}
+    .task-name{font-size:14px;font-weight:600;margin-bottom:8px;}
+    .task-desc{font-size:13px;font-weight:300;color:var(--text-muted);line-height:1.65;}
+    .bottom-cta{padding:120px 24px;text-align:center;}
+    .bottom-cta-title{font-family:var(--font-display);font-size:clamp(32px,5vw,56px);font-weight:400;margin-bottom:16px;line-height:1.1;}
+    .bottom-cta-sub{font-size:15px;font-weight:300;color:var(--text-muted);margin-bottom:40px;}
+    footer{border-top:1px solid var(--line);padding:24px 40px;display:flex;align-items:center;justify-content:space-between;}
+    .footer-brand{font-size:12px;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-muted);}
+    .footer-links{display:flex;gap:20px;}
+    .footer-links a{font-size:12px;color:var(--text-muted);text-decoration:none;transition:color 0.15s;}
+    .footer-links a:hover{color:var(--text);}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+    @media(max-width:768px){nav{padding:0 20px;}.nav-subtitle,.nav-sep{display:none;}.features-grid,.tasks-grid{grid-template-columns:1fr;}footer{flex-direction:column;gap:16px;text-align:center;}.footer-links{justify-content:center;}.gate-box{padding:32px 24px;}}
   </style>
 </head>
 <body>
 
-<!-- ACCESS CODE GATE -->
+<!-- GATE -->
 <div class="gate" id="gate">
   <div class="gate-box">
-    <div class="gate-title">Accès à l'examen</div>
-    <p class="gate-sub">Entrez le code d'accès fourni<br>par votre enseignant.</p>
-    <input class="gate-input" id="codeInput" type="text" placeholder="Code d'accès" autocomplete="off" spellcheck="false" />
+    <div class="gate-title" data-i18n="gate_title"></div>
+    <p class="gate-sub" data-i18n="gate_sub"></p>
+    <input class="gate-input" id="codeInput" type="text" autocomplete="off" spellcheck="false" />
     <div class="gate-error" id="gateError"></div>
-    <button class="gate-btn" id="gateBtn" onclick="verifyCode()">Accéder</button>
+    <button class="gate-btn" id="gateBtn" onclick="verifyCode()"></button>
   </div>
 </div>
 
@@ -239,95 +107,83 @@
   <a href="/landing.html" class="nav-brand">
     <span class="nav-logo">TCF</span>
     <span class="nav-sep"></span>
-    <span class="nav-subtitle">Expression Écrite</span>
+    <span class="nav-subtitle" data-i18n="nav_brand_sub"></span>
   </a>
-  <div class="nav-right" style="display:flex;align-items:center;gap:8px;">
+  <div class="nav-right">
     <div id="langToggle" style="display:flex;gap:4px;"></div>
-    <a href="/dashboard.html" class="nav-link" id="t_nav_dashboard"></a>
-    <a href="/admin.html" class="nav-link" id="t_nav_admin"></a>
+    <a href="/dashboard.html" class="nav-link" data-i18n="nav_dashboard"></a>
+    <a href="/admin.html" class="nav-link" data-i18n="nav_admin"></a>
   </div>
 </nav>
 
 <!-- HERO -->
 <section class="hero">
   <div class="hero-inner">
-    <div class="hero-badge">Simulateur officiel</div>
-    <h1 class="hero-title">Préparez votre<br><em>TCF Canada</em></h1>
-    <p class="hero-sub">Entraînez-vous aux trois tâches d'expression écrite dans des conditions réelles d'examen — minuterie, interface épurée, soumission en un clic.</p>
-    <a href="/index.html" class="hero-cta">Commencer l'examen <span class="hero-cta-arrow">→</span></a>
+    <div class="hero-badge" data-i18n="hero_badge"></div>
+    <h1 class="hero-title"><span data-i18n="hero_title_1"></span><br><em data-i18n="hero_title_2"></em></h1>
+    <p class="hero-sub" data-i18n="hero_sub"></p>
+    <a href="/index.html" class="hero-cta"><span data-i18n="hero_cta"></span><span class="hero-cta-arrow">→</span></a>
   </div>
 </section>
 
 <!-- FEATURES -->
 <section class="features">
-  <div class="section-label">Pourquoi ce simulateur</div>
-  <h2 class="section-title">Tout ce qu'il vous faut<br>pour réussir</h2>
+  <div class="section-label" data-i18n="feat_label"></div>
+  <h2 class="section-title" data-i18n="feat_title"></h2>
   <div class="features-grid">
-    <div class="feature-card"><span class="feature-icon">⏱</span><div class="feature-title">Minuterie réelle</div><p class="feature-desc">60 minutes chronométrées comme lors du vrai examen. Alerte visuelle dans les 5 dernières minutes.</p></div>
-    <div class="feature-card"><span class="feature-icon">📋</span><div class="feature-title">Sujets variés</div><p class="feature-desc">Plusieurs séries de sujets couvrant différents thèmes — vie quotidienne, éducation, environnement et plus.</p></div>
-    <div class="feature-card"><span class="feature-icon">✉️</span><div class="feature-title">Soumission directe</div><p class="feature-desc">Vos réponses sont envoyées directement à votre enseignant à la fin de l'examen.</p></div>
-    <div class="feature-card"><span class="feature-icon">📱</span><div class="feature-title">Tous appareils</div><p class="feature-desc">Interface optimisée pour ordinateur, tablette et mobile — passez l'examen depuis n'importe où.</p></div>
-    <div class="feature-card"><span class="feature-icon">🔢</span><div class="feature-title">Compteur de mots</div><p class="feature-desc">Suivez en temps réel le nombre de mots rédigés pour respecter les exigences de chaque tâche.</p></div>
-    <div class="feature-card"><span class="feature-icon">🎯</span><div class="feature-title">Interface sans distraction</div><p class="feature-desc">Un environnement sobre et concentré, conçu pour vous laisser vous focaliser entièrement sur l'écriture.</p></div>
+    <div class="feature-card"><span class="feature-icon">⏱</span><div class="feature-title" data-i18n="feat1_title"></div><p class="feature-desc" data-i18n="feat1_desc"></p></div>
+    <div class="feature-card"><span class="feature-icon">📋</span><div class="feature-title" data-i18n="feat2_title"></div><p class="feature-desc" data-i18n="feat2_desc"></p></div>
+    <div class="feature-card"><span class="feature-icon">✉️</span><div class="feature-title" data-i18n="feat3_title"></div><p class="feature-desc" data-i18n="feat3_desc"></p></div>
+    <div class="feature-card"><span class="feature-icon">📱</span><div class="feature-title" data-i18n="feat4_title"></div><p class="feature-desc" data-i18n="feat4_desc"></p></div>
+    <div class="feature-card"><span class="feature-icon">🔢</span><div class="feature-title" data-i18n="feat5_title"></div><p class="feature-desc" data-i18n="feat5_desc"></p></div>
+    <div class="feature-card"><span class="feature-icon">🎯</span><div class="feature-title" data-i18n="feat6_title"></div><p class="feature-desc" data-i18n="feat6_desc"></p></div>
   </div>
 </section>
 
 <!-- TASKS -->
 <section class="tasks">
   <div class="tasks-inner">
-    <div class="section-label">Structure de l'examen</div>
-    <h2 class="section-title">Trois tâches d'écriture</h2>
+    <div class="section-label" data-i18n="tasks_label"></div>
+    <h2 class="section-title" data-i18n="tasks_title"></h2>
     <div class="tasks-grid">
-      <div class="task-card"><div class="task-num">01</div><div class="task-name">Tâche 1 — Message personnel</div><p class="task-desc">Répondez à un message ou un courriel en donnant des informations, des conseils ou des opinions personnelles.</p></div>
-      <div class="task-card"><div class="task-num">02</div><div class="task-name">Tâche 2 — Article ou texte formel</div><p class="task-desc">Rédigez un article, une lettre formelle ou un texte argumentatif sur un sujet donné (150–200 mots).</p></div>
-      <div class="task-card"><div class="task-num">03</div><div class="task-name">Tâche 3 — Expression d'opinion</div><p class="task-desc">Exprimez et justifiez votre point de vue sur une question de société avec des exemples concrets.</p></div>
+      <div class="task-card"><div class="task-num">01</div><div class="task-name" data-i18n="task1_name"></div><p class="task-desc" data-i18n="task1_desc"></p></div>
+      <div class="task-card"><div class="task-num">02</div><div class="task-name" data-i18n="task2_name"></div><p class="task-desc" data-i18n="task2_desc"></p></div>
+      <div class="task-card"><div class="task-num">03</div><div class="task-name" data-i18n="task3_name"></div><p class="task-desc" data-i18n="task3_desc"></p></div>
     </div>
   </div>
 </section>
 
 <!-- BOTTOM CTA -->
 <section class="bottom-cta">
-  <h2 class="bottom-cta-title">Prêt à vous entraîner ?</h2>
-  <p class="bottom-cta-sub">Choisissez un sujet et commencez votre simulation dès maintenant.</p>
-  <a href="/index.html" class="hero-cta">Accéder à l'examen <span class="hero-cta-arrow">→</span></a>
+  <h2 class="bottom-cta-title" data-i18n="cta_title"></h2>
+  <p class="bottom-cta-sub" data-i18n="cta_sub"></p>
+  <a href="/index.html" class="hero-cta"><span data-i18n="cta_btn"></span><span class="hero-cta-arrow">→</span></a>
 </section>
 
 <!-- FOOTER -->
 <footer>
-  <span class="footer-brand">TCF — Expression Écrite</span>
+  <span class="footer-brand">TCF</span>
   <div class="footer-links">
-    <a href="/index.html">Examen</a>
-    <a href="/dashboard.html">Dashboard</a>
-    <a href="/admin.html">Admin</a>
+    <a href="/index.html" data-i18n="nav_exam"></a>
+    <a href="/dashboard.html" data-i18n="nav_dashboard"></a>
+    <a href="/admin.html" data-i18n="nav_admin"></a>
   </div>
 </footer>
 
 <script src="i18n.js"></script>
 <script>
-  // Apply i18n
+  // Apply all data-i18n attributes
   function applyI18n() {
-    renderLangToggle('langToggle');
-    document.getElementById('t_nav_dashboard').textContent = t('nav_dashboard');
-    document.getElementById('t_nav_admin').textContent = t('nav_admin');
-    const heroTitle = document.querySelector('.hero-title');
-    if (heroTitle) heroTitle.innerHTML = t('hero_title_1') + '<br><em>' + t('hero_title_2') + '</em>';
-    const heroBadge = document.querySelector('.hero-badge');
-    if (heroBadge) { const dot = heroBadge.querySelector('span') || ''; heroBadge.textContent = t('hero_badge'); }
-    const heroSub = document.querySelector('.hero-sub');
-    if (heroSub) heroSub.textContent = t('hero_sub');
-    document.querySelectorAll('.hero-cta').forEach(el => { el.innerHTML = t('hero_cta') + ' <span class="hero-cta-arrow">→</span>'; });
-    const gateTitle = document.querySelector('.gate-title');
-    if (gateTitle) gateTitle.textContent = t('gate_title');
-    const gateSub = document.querySelector('.gate-sub');
-    if (gateSub) gateSub.textContent = t('gate_sub');
-    const gateInput = document.getElementById('codeInput');
-    if (gateInput) gateInput.placeholder = t('gate_placeholder');
-    const gateBtn = document.getElementById('gateBtn');
-    if (gateBtn) gateBtn.textContent = t('gate_btn');
+    document.querySelectorAll("[data-i18n]").forEach(el => {
+      el.textContent = t(el.getAttribute("data-i18n"));
+    });
+    document.getElementById("codeInput").placeholder = t("gate_placeholder");
+    document.getElementById("gateBtn").textContent = t("gate_btn");
+    renderLangToggle("langToggle");
   }
   applyI18n();
 
-  // Show gate unless already verified this session
+  // Gate logic
   if (sessionStorage.getItem("tcf_access") === "granted") {
     document.getElementById("gate").style.display = "none";
   }
@@ -337,18 +193,13 @@
   const btn = document.getElementById("gateBtn");
 
   input.addEventListener("keydown", e => { if (e.key === "Enter") verifyCode(); });
-  input.addEventListener("input", () => {
-    input.classList.remove("error");
-    errorEl.textContent = "";
-  });
+  input.addEventListener("input", () => { input.classList.remove("error"); errorEl.textContent = ""; });
 
   async function verifyCode() {
     const code = input.value.trim();
     if (!code) { errorEl.textContent = t("gate_error_empty"); return; }
-
     btn.disabled = true;
     btn.textContent = t("gate_verifying");
-
     try {
       const res = await fetch("/verify-code", {
         method: "POST",
@@ -356,12 +207,12 @@
         body: JSON.stringify({ code })
       });
       const data = await res.json();
-
       if (data.ok) {
         sessionStorage.setItem("tcf_access", "granted");
-        document.getElementById("gate").style.opacity = "0";
-        document.getElementById("gate").style.transition = "opacity 0.3s";
-        setTimeout(() => document.getElementById("gate").style.display = "none", 300);
+        const gate = document.getElementById("gate");
+        gate.style.transition = "opacity 0.3s";
+        gate.style.opacity = "0";
+        setTimeout(() => gate.style.display = "none", 300);
       } else {
         input.classList.add("error");
         errorEl.textContent = t("gate_error_wrong");
