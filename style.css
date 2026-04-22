@@ -165,17 +165,21 @@ body.dark .task {
 .writing-box {
   height: 100%;
   display: flex;
+  overflow: hidden; /* 🔥 important */
 }
 
 .task {
   flex: 1;
   position: relative;
+  display: flex; /* 🔥 key */
 }
 
 /* =======================
    TEXTAREA
 ======================= */
 textarea {
+  flex: 1; /* 🔥 fills parent */
+
   width: 100%;
   height: 100%;
 
@@ -189,11 +193,6 @@ textarea {
 
   resize: none;
   outline: none;
-
-  background: rgba(255, 255, 255, 0.9);
-  color: #222;
-
-  transition: 0.2s;
 
   overflow-y: auto;
 }
@@ -214,9 +213,8 @@ textarea:focus {
 ======================= */
 .word-count {
   position: absolute;
-  bottom: 14px;
-  right: 18px;
+  bottom: 12px;
+  right: 16px;
 
-  font-size: 13px;
-  opacity: 0.6;
+  pointer-events: none; /* 🔥 prevents blocking typing */
 }
