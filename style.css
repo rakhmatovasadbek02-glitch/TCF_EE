@@ -1,11 +1,16 @@
+/* =======================
+   GLOBAL (LOCK PAGE)
+======================= */
 html, body {
   height: 100%;
   margin: 0;
-  overflow: hidden; /* 🔒 no page scroll */
+  overflow: hidden; /* 🔒 prevents page scroll */
   font-family: 'Segoe UI', sans-serif;
 }
 
-/* THEMES */
+/* =======================
+   THEMES
+======================= */
 body.light {
   background: linear-gradient(135deg, #667eea, #764ba2);
   color: white;
@@ -16,7 +21,9 @@ body.dark {
   color: #e0e0e0;
 }
 
-/* TOPBAR */
+/* =======================
+   TOP BAR
+======================= */
 .topbar {
   height: 60px;
   display: flex;
@@ -26,11 +33,14 @@ body.dark {
   backdrop-filter: blur(10px);
 }
 
+.logo {
+  font-weight: bold;
+}
+
 .timer {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 24px;
 }
 
 .top-right span {
@@ -42,14 +52,20 @@ body.dark {
   margin-left: 10px;
 }
 
-/* CONTAINER */
+/* =======================
+   MAIN CONTAINER
+======================= */
 .container {
   height: calc(100vh - 60px);
   display: flex;
   flex-direction: column;
+  padding: 15px;
+  box-sizing: border-box;
 }
 
-/* BUTTONS */
+/* =======================
+   BUTTONS
+======================= */
 .controls button {
   margin: 5px;
 }
@@ -62,32 +78,46 @@ body.dark {
   background: gold;
 }
 
-/* LAYOUT */
+/* =======================
+   EXAM LAYOUT (CRITICAL)
+======================= */
 .exam-layout {
+  flex: 1; /* fills remaining space */
   display: grid;
   grid-template-columns: 1fr 1.5fr;
   gap: 15px;
-
-  height: 100%;
-  overflow: hidden;
-}
-.exam-layout {
-  flex: 1;
+  overflow: hidden; /* 🔒 prevents overflow */
 }
 
-/* LEFT PANEL */
+/* =======================
+   LEFT PANEL (QUESTION)
+======================= */
 .question-box {
   height: 100%;
   overflow-y: auto;
+  background: rgba(255,255,255,0.1);
+  padding: 15px;
+  border-radius: 10px;
 }
 
-/* RIGHT PANEL */
+/* =======================
+   RIGHT PANEL (WRITING)
+======================= */
 .writing-box {
   height: 100%;
-  overflow: hidden;
   display: flex;
+  overflow: hidden;
 }
 
+/* TASK WRAPPER (IMPORTANT) */
+.task {
+  flex: 1;
+  position: relative;
+}
+
+/* =======================
+   TEXTAREA (SCROLL HERE)
+======================= */
 textarea {
   width: 100%;
   height: 100%;
@@ -95,17 +125,20 @@ textarea {
 
   border-radius: 10px;
   border: none;
-  resize: none;
 
-  overflow-y: auto; /* ✅ REAL SCROLL */
+  resize: none;
+  outline: none;
+
+  overflow-y: auto; /* ✅ independent scroll */
 }
 
+/* =======================
+   WORD COUNT
+======================= */
 .word-count {
   position: absolute;
   bottom: 10px;
   right: 15px;
-}
-.task {
-  flex: 1;
-  position: relative;
+  font-size: 14px;
+  opacity: 0.8;
 }
