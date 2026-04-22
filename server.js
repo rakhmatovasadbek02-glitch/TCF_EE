@@ -1,10 +1,14 @@
 const express = require("express");
 const sqlite3 = require("sqlite3").verbose();
 const cors = require("cors");
+const path = require("path");
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+// Serve index.html, dashboard.html, style.css, script.js as static files
+app.use(express.static(path.join(__dirname)));
 
 const db = new sqlite3.Database("database.db");
 
@@ -18,7 +22,6 @@ db.run(`
   )
 `);
 
-// FIX 3: routes defined BEFORE app.listen to avoid race conditions
 app.post("/save", (req, res) => {
   const { student, content } = req.body;
 
@@ -50,4 +53,6 @@ app.get("/writings", (req, res) => {
 
 app.listen(3000, () => {
   console.log("Server running on http://localhost:3000");
+  console.log("Student exam:       http://localhost:3000/index.html");
+  console.log("Teacher dashboard:  http://localhost:3000/dashboard.html");
 });
