@@ -4,76 +4,80 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>TCF — Expression Écrite</title>
+  <title id="pageTitle">TCF — Expression Écrite</title>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <style>
+    .lang-toggle { display:flex; gap:4px; }
+    .lang-btn {
+      background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.7);
+      border: 1px solid rgba(255,255,255,0.2); border-radius: 4px;
+      padding: 4px 8px; font-family: var(--font); font-size: 11px;
+      font-weight: 500; cursor: pointer; transition: all 0.15s;
+      letter-spacing: 0.05em;
+    }
+    .lang-btn:hover { background: rgba(255,255,255,0.22); color: #fff; }
+    .lang-btn.active { background: #ffffff; color: var(--c1); font-weight: 600; border-color: #fff; }
+  </style>
 </head>
 <body>
 
 <div class="shell">
 
-  <!-- TOP BAR -->
   <div class="topbar">
     <div class="topbar-left">
       <span class="brand">TCF</span>
       <span class="brand-sep"></span>
-      <span class="brand-sub">Expression Écrite</span>
+      <span class="brand-sub" id="t_brand_sub"></span>
     </div>
     <div class="topbar-center">
       <span id="timer" class="timer">60:00</span>
-      <div class="timer-label">TEMPS RESTANT</div>
+      <div class="timer-label" id="t_timer_label"></div>
     </div>
-    <div class="topbar-right">
-      <button class="btn-start" onclick="startTimer()">Commencer</button>
-      <button class="btn-submit" onclick="saveWriting()">Soumettre</button>
+    <div class="topbar-right" style="display:flex;align-items:center;gap:10px;">
+      <div class="lang-toggle" id="langToggle"></div>
+      <button class="btn-start" onclick="startTimer()" id="t_btn_start"></button>
+      <button class="btn-submit" onclick="saveWriting()" id="t_btn_submit"></button>
     </div>
   </div>
 
-  <!-- SELECTOR BAR — always visible -->
   <div class="selectorbar">
-    <label class="selector-label" for="setSelect">SUJET</label>
+    <label class="selector-label" id="t_subject_label" for="setSelect"></label>
     <select id="setSelect" class="set-select"></select>
     <span id="setStatus" class="set-status"></span>
   </div>
 
-  <!-- ACTION BAR -->
   <div class="actionbar">
     <nav class="task-nav">
-      <button class="task-btn active" onclick="selectTask(1)">Tâche 1</button>
-      <button class="task-btn" onclick="selectTask(2)">Tâche 2</button>
-      <button class="task-btn" onclick="selectTask(3)">Tâche 3</button>
+      <button class="task-btn active" onclick="selectTask(1)" id="t_task1"></button>
+      <button class="task-btn" onclick="selectTask(2)" id="t_task2"></button>
+      <button class="task-btn" onclick="selectTask(3)" id="t_task3"></button>
     </nav>
   </div>
 
-  <!-- MAIN -->
   <div class="main">
-
-    <!-- CONSIGNE -->
     <div class="consigne-panel">
-      <div class="consigne-label">CONSIGNE</div>
-      <p id="questionText" class="consigne-text">Sélectionnez un sujet pour commencer.</p>
+      <div class="consigne-label" id="t_consigne_label"></div>
+      <p id="questionText" class="consigne-text"></p>
     </div>
-
-    <!-- WRITING -->
     <div class="write-panel">
       <div class="task-area" id="taskBox1">
-        <textarea id="task1" placeholder="Rédigez votre réponse…" disabled></textarea>
-        <div class="write-footer"><span id="count1" class="wc">0 mot</span></div>
+        <textarea id="task1" disabled></textarea>
+        <div class="write-footer"><span id="count1" class="wc"></span></div>
       </div>
       <div class="task-area" id="taskBox2" style="display:none">
-        <textarea id="task2" placeholder="Rédigez votre réponse…" disabled></textarea>
-        <div class="write-footer"><span id="count2" class="wc">0 mot</span></div>
+        <textarea id="task2" disabled></textarea>
+        <div class="write-footer"><span id="count2" class="wc"></span></div>
       </div>
       <div class="task-area" id="taskBox3" style="display:none">
-        <textarea id="task3" placeholder="Rédigez votre réponse…" disabled></textarea>
-        <div class="write-footer"><span id="count3" class="wc">0 mot</span></div>
+        <textarea id="task3" disabled></textarea>
+        <div class="write-footer"><span id="count3" class="wc"></span></div>
       </div>
     </div>
-
   </div>
 </div>
 
+<script src="i18n.js"></script>
 <script src="script.js"></script>
 </body>
 </html>

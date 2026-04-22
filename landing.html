@@ -206,6 +206,9 @@
     .footer-links a { font-size: 12px; color: var(--text-muted); text-decoration: none; transition: color 0.15s; }
     .footer-links a:hover { color: var(--text); }
 
+    .lang-btn{background:rgba(255,255,255,0.12);color:rgba(255,255,255,0.7);border:1px solid rgba(255,255,255,0.2);border-radius:4px;padding:4px 8px;font-family:var(--font);font-size:11px;font-weight:500;cursor:pointer;transition:all 0.15s;letter-spacing:0.05em;}
+    .lang-btn:hover{background:rgba(255,255,255,0.22);color:#fff;}
+    .lang-btn.active{background:#ffffff;color:var(--c1);font-weight:600;border-color:#fff;}
     @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
 
     @media (max-width: 768px) {
@@ -238,9 +241,10 @@
     <span class="nav-sep"></span>
     <span class="nav-subtitle">Expression Écrite</span>
   </a>
-  <div class="nav-right">
-    <a href="/dashboard.html" class="nav-link">Dashboard</a>
-    <a href="/admin.html" class="nav-link">Admin</a>
+  <div class="nav-right" style="display:flex;align-items:center;gap:8px;">
+    <div id="langToggle" style="display:flex;gap:4px;"></div>
+    <a href="/dashboard.html" class="nav-link" id="t_nav_dashboard"></a>
+    <a href="/admin.html" class="nav-link" id="t_nav_admin"></a>
   </div>
 </nav>
 
@@ -298,7 +302,31 @@
   </div>
 </footer>
 
+<script src="i18n.js"></script>
 <script>
+  // Apply i18n
+  function applyI18n() {
+    renderLangToggle('langToggle');
+    document.getElementById('t_nav_dashboard').textContent = t('nav_dashboard');
+    document.getElementById('t_nav_admin').textContent = t('nav_admin');
+    const heroTitle = document.querySelector('.hero-title');
+    if (heroTitle) heroTitle.innerHTML = t('hero_title_1') + '<br><em>' + t('hero_title_2') + '</em>';
+    const heroBadge = document.querySelector('.hero-badge');
+    if (heroBadge) { const dot = heroBadge.querySelector('span') || ''; heroBadge.textContent = t('hero_badge'); }
+    const heroSub = document.querySelector('.hero-sub');
+    if (heroSub) heroSub.textContent = t('hero_sub');
+    document.querySelectorAll('.hero-cta').forEach(el => { el.innerHTML = t('hero_cta') + ' <span class="hero-cta-arrow">→</span>'; });
+    const gateTitle = document.querySelector('.gate-title');
+    if (gateTitle) gateTitle.textContent = t('gate_title');
+    const gateSub = document.querySelector('.gate-sub');
+    if (gateSub) gateSub.textContent = t('gate_sub');
+    const gateInput = document.getElementById('codeInput');
+    if (gateInput) gateInput.placeholder = t('gate_placeholder');
+    const gateBtn = document.getElementById('gateBtn');
+    if (gateBtn) gateBtn.textContent = t('gate_btn');
+  }
+  applyI18n();
+
   // Show gate unless already verified this session
   if (sessionStorage.getItem("tcf_access") === "granted") {
     document.getElementById("gate").style.display = "none";
@@ -316,10 +344,10 @@
 
   async function verifyCode() {
     const code = input.value.trim();
-    if (!code) { errorEl.textContent = "Veuillez entrer un code."; return; }
+    if (!code) { errorEl.textContent = t("gate_error_empty"); return; }
 
     btn.disabled = true;
-    btn.textContent = "Vérification…";
+    btn.textContent = t("gate_verifying");
 
     try {
       const res = await fetch("/verify-code", {
@@ -336,16 +364,16 @@
         setTimeout(() => document.getElementById("gate").style.display = "none", 300);
       } else {
         input.classList.add("error");
-        errorEl.textContent = "Code incorrect. Réessayez.";
+        errorEl.textContent = t("gate_error_wrong");
         input.value = "";
         input.focus();
         btn.disabled = false;
-        btn.textContent = "Accéder";
+        btn.textContent = t("gate_btn");
       }
     } catch {
-      errorEl.textContent = "Erreur de connexion. Réessayez.";
+      errorEl.textContent = t("gate_error_conn");
       btn.disabled = false;
-      btn.textContent = "Accéder";
+      btn.textContent = t("gate_btn");
     }
   }
 </script>

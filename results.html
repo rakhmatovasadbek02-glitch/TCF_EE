@@ -37,6 +37,9 @@
       font-size: 28px; margin: 0 auto 20px;
       animation: popIn 0.4s ease;
     }
+    .lang-btn{background:rgba(255,255,255,0.12);color:rgba(255,255,255,0.7);border:1px solid rgba(255,255,255,0.2);border-radius:4px;padding:4px 8px;font-family:var(--font);font-size:11px;font-weight:500;cursor:pointer;transition:all 0.15s;}
+    .lang-btn:hover{background:rgba(255,255,255,0.22);color:#fff;}
+    .lang-btn.active{background:#fff;color:var(--c1);font-weight:600;border-color:#fff;}
     @keyframes popIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
     .success-title { font-family: var(--font-display); font-size: clamp(28px, 5vw, 40px); font-weight: 400; margin-bottom: 8px; }
@@ -106,12 +109,22 @@
   <div id="taskResults"></div>
 
   <div class="actions">
-    <a href="/landing.html" class="btn-white">Retour à l'accueil</a>
-    <a href="/index.html" class="btn-ghost">Nouvel examen</a>
+    <a href="/landing.html" class="btn-white" id="t_results_back"></a>
+    <a href="/index.html" class="btn-ghost" id="t_results_new"></a>
   </div>
 </div>
 
 <script>
+  renderLangToggle('langToggle');
+  document.getElementById('t_results_back').textContent = t('results_back');
+  document.getElementById('t_results_new').textContent = t('results_new');
+  document.querySelector('.brand-sub').textContent = t('results_sub_title');
+  document.getElementById('t_back_exam').textContent = '← ' + t('nav_exam');
+  document.querySelector('.success-title').textContent = t('results_success');
+  document.getElementById('totalWords').parentElement.querySelector('.stat-label').textContent = t('results_total_words');
+  document.querySelectorAll('.stat-label')[1].textContent = t('results_tasks');
+  document.querySelectorAll('.stat-label')[2].textContent = t('results_time');
+
   function countWords(text) {
     if (!text || !text.trim()) return 0;
     return text.trim().split(/\s+/).length;
@@ -127,6 +140,7 @@
     const { student, content, timeUsed } = result;
 
     document.getElementById("studentNameDisplay").textContent = student;
+    document.querySelector('.success-sub').innerHTML = t('results_sub').replace('{name}', '<span class="student-name-display">' + student + '</span>');
 
     const tasks = [content.task1 || "", content.task2 || "", content.task3 || ""];
     const wordCounts = tasks.map(countWords);
@@ -156,12 +170,13 @@
         </div>
         ${text.trim()
           ? `<div class="task-result-text">${text.replace(/</g, "&lt;")}</div>`
-          : `<div class="task-result-empty">Aucune réponse rédigée.</div>`
+          : `<div class="task-result-empty">${t('results_no_answer')}</div>`
         }
       `;
       container.appendChild(card);
     });
   }
 </script>
+<script src="i18n.js"></script>
 </body>
 </html>
