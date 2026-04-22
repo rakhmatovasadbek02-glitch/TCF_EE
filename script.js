@@ -1,4 +1,26 @@
 document.addEventListener("DOMContentLoaded", () => {
+// =======================
+// FULLSCREEN TOGGLE
+// =======================
+const fullscreenBtn = document.getElementById("fullscreenBtn");
+
+if (fullscreenBtn) {
+  fullscreenBtn.addEventListener("click", () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+    } else {
+      document.exitFullscreen();
+    }
+  });
+}
+
+document.addEventListener("fullscreenchange", () => {
+  if (document.fullscreenElement) {
+    fullscreenBtn.textContent = "⤫"; // exit icon
+  } else {
+    fullscreenBtn.textContent = "⛶"; // enter icon
+  }
+});
 
   // =======================
   // TIMER SETUP (60 MIN)
@@ -186,7 +208,7 @@ window.selectTask = function (num) {
     document.getElementById("task2"),
     document.getElementById("task3")
   ];
-  
+
 const buttons = document.querySelectorAll(".task-buttons button");
 buttons.forEach(b => b.classList.remove("active"));
 buttons[num - 1].classList.add("active");

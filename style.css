@@ -212,3 +212,17 @@ body.dark textarea {
 .task-buttons button.active {
   background: #ffd700;
 }
+
+#fullscreenBtn {
+  margin-left: 10px;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background: white;
+}
+
+body.dark #fullscreenBtn {
+  background: #333;
+  color: white;
+}
